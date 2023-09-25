@@ -25,7 +25,7 @@ class Plugin(PluginBase):
 
     @property
     def cli_prefix(self):
-        return self.name.replace(common.storage_plugin_module_prefix, "")
+        return "storage-" + self.name.replace(common.storage_plugin_module_prefix, "")
 
     @property
     def settings_cls(self):

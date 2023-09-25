@@ -31,7 +31,7 @@ class AnnotatedStringStorageInterface(ABC):
     @abstractmethod
     def flags(self) -> Dict[str, Any]:
         ...
-    
+
     @abstractmethod
     def is_callable(self) -> bool:
         ...
@@ -50,7 +50,7 @@ class AnnotatedString(str, AnnotatedStringStorageInterface):
         new.flags = self.flags
         new.callable = self.callable
         return new
-    
+
     def is_callable(self) -> bool:
         return self.callable is not None
 
@@ -76,9 +76,8 @@ def flag(value, flag_type, flag_value=True):
 
 
 def is_callable(value: Any):
-    return (
-        callable(value)
-        or (isinstance(value, AnnotatedStringStorageInterface) and value.is_callable())
+    return callable(value) or (
+        isinstance(value, AnnotatedStringStorageInterface) and value.is_callable()
     )
 
 
@@ -115,6 +114,12 @@ def glob_wildcards(pattern, files=None, followlinks=False):
     Glob the values of the wildcards by matching the given pattern to the filesystem.
     Returns a named tuple with a list of values for each wildcard.
     """
+    if is_flagged(pattern, "remote_object") and files is None:
+        # for storage object patterns, we obtain the list of files from
+        # the storage provider
+        pattern = pattern.path_without_protocol()
+        files = pattern.flags["remote_object"].list_all_below_ancestor()
+
     pattern = os.path.normpath(pattern)
     first_wildcard = re.search("{[^{]", pattern)
     dirname = (
@@ -179,7 +184,7 @@ class IOCacheStorageInterface:
     @abstractmethod
     def exists_local(self) -> Dict[str, bool]:
         ...
-    
+
     @property
     @abstractmethod
     def exists_remote(self) -> Dict[str, bool]:
@@ -189,7 +194,7 @@ class IOCacheStorageInterface:
     @abstractmethod
     def mtime(self) -> Dict[str, Mtime]:
         ...
-    
+
     @property
     @abstractmethod
     def size(self) -> Dict[str, int]:

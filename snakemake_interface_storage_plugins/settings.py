@@ -5,7 +5,7 @@ import snakemake_interface_common.plugin_registry.plugin
 
 
 @dataclass
-class StorageSettingsBase(
+class StorageProviderSettingsBase(
     snakemake_interface_common.plugin_registry.plugin.SettingsBase
 ):
     """Base class for storage plugin settings.
