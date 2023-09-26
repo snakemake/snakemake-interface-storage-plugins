@@ -1,6 +1,6 @@
-__author__ = "Christopher Tomkins-Tinch"
-__copyright__ = "Copyright 2022, Christopher Tomkins-Tinch"
-__email__ = "tomkinsc@broadinstitute.org"
+__author__ = "Christopher Tomkins-Tinch, Johannes Köster"
+__copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
+__email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 
