@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
 import os
-from typing import Any, Optional
-from snakemake_interface_storage_plugins.settings import StorageProviderSettingsBase
+from pathlib import Path
+from typing import Any, Optional, Type
 
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
+from snakemake_interface_storage_plugins.settings import (
+    StorageProviderSettingsBase,
+)
 
 
 class TestStorageBase(ABC):
@@ -11,34 +14,32 @@ class TestStorageBase(ABC):
     retrieve_only = False
 
     @abstractmethod
-    def get_storage_provider(self) -> StorageProviderBase:
+    def get_storage_provider_cls(self) -> Type[StorageProviderBase]:
         ...
+
+    def get_storage_provider_settings(self) -> Optional[StorageProviderSettingsBase]:
+        return None
 
     @abstractmethod
     def get_query(self) -> Any:
         ...
 
-    @abstractmethod
-    def get_storage_settings(self) -> Optional[StorageProviderSettingsBase]:
-        ...
-
     def test_storage(self, tmp_path):
-        orig_path = os.getcwd()
-        os.chdir(tmp_path)
-        try:
-            provider = self.get_storage_provider(self.get_storage_settings())
+        provider = self.get_storage_provider_cls()(
+            local_prefix=Path(tmp_path),
+            settings=self.get_storage_provider_settings(),
+        )
 
-            obj = provider.object(self.get_query())
+        obj = provider.object(self.get_query())
+        obj = obj.flags["storage_object"]
 
-            if not self.retrieve_only:
-                with open(obj.local_path(), "w") as f:
-                    f.write("test")
-                obj.upload()
+        if not self.retrieve_only:
+            with open(obj.local_path(), "w") as f:
+                f.write("test")
+            obj.managed_store()
 
-            assert obj.exists()
-            print(obj.mtime())
-            print(obj.size())
+        assert obj.exists()
+        print(obj.mtime())
+        print(obj.size())
 
-            obj.download()
-        finally:
-            os.chdir(orig_path)
+        obj.managed_retrieve()

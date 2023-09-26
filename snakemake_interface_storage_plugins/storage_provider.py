@@ -55,7 +55,10 @@ class StorageProviderBase(ABC):
             retrieve=retrieve,
             provider=self,
         )
+        
         if static:
             storage_object = StaticStorageObjectProxy(storage_object)
+
+        
 
         return flag(storage_object.local_path(), "storage_object", storage_object)

@@ -42,7 +42,7 @@ class AnnotatedStringStorageInterface(ABC):
 
 class AnnotatedString(str, AnnotatedStringStorageInterface):
     def __init__(self, value):
-        self.flags = dict()
+        self._flags = dict()
         self.callable = value if is_callable(value) else None
 
     def new_from(self, new_value):
@@ -53,6 +53,10 @@ class AnnotatedString(str, AnnotatedStringStorageInterface):
 
     def is_callable(self) -> bool:
         return self.callable is not None
+    
+    @property
+    def flags(self) -> Dict[str, Any]:
+        return self._flags
 
 
 MaybeAnnotated = Union[AnnotatedStringStorageInterface, str]

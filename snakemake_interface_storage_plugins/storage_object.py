@@ -66,10 +66,16 @@ class StorageObjectBase(ABC):
         self.keep_local = keep_local
         self.retrieve = retrieve
         self.provider = provider
+        self.validate_query()
 
     def local_path(self):
         """Return the local paths that would represent the query."""
         return self.provider.local_prefix / self.local_suffix()
+
+    @abstractmethod
+    def validate_query(self):
+        """Validate the query and raise a WorkflowError if it is invalid."""
+        ...
 
     @abstractmethod
     def local_suffix(self):
@@ -126,7 +132,7 @@ class StorageObjectBase(ABC):
     def remove(self):
         ...
 
-    def retrieve(self):
+    def managed_retrieve(self):
         try:
             return self.retrieve_object()
         except Exception as e:
@@ -138,7 +144,7 @@ class StorageObjectBase(ABC):
                 os.remove(local_path)
             raise WorkflowError(e)
 
-    def store(self):
+    def managed_store(self):
         try:
             self.store_object()
         except Exception as e:
