@@ -25,14 +25,14 @@ class StoragePluginRegistry(PluginRegistryBase):
 
     @property
     def module_prefix(self) -> str:
-        return common.executor_plugin_module_prefix
+        return common.storage_plugin_module_prefix
 
     def load_plugin(self, name: str, module: types.ModuleType) -> Plugin:
         """Load a plugin by name."""
         return Plugin(
             _name=name,
             storage_provider=module.StorageProvider,
-            _storage_settings_cls=getattr(module, "StorageSettings", None),
+            _storage_settings_cls=getattr(module, "StorageProviderSettings", None),
         )
 
     def expected_attributes(self) -> Mapping[str, AttributeType]:

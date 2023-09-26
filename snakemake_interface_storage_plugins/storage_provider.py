@@ -13,8 +13,6 @@ from snakemake_interface_storage_plugins.io import (
 )
 from snakemake_interface_storage_plugins.settings import StorageProviderSettingsBase
 
-from snakemake_interface_storage_plugins.storage_object import StaticStorageObjectProxy
-
 
 class StorageProviderBase(ABC):
     """This is an abstract class to be used to derive remote provider classes.
@@ -43,6 +41,10 @@ class StorageProviderBase(ABC):
         retrieve: bool = True,
         static: bool = False,
     ):
+        from snakemake_interface_storage_plugins.storage_object import (
+            StaticStorageObjectProxy,
+        )
+
         if keep_local is None:
             keep_local = self.keep_local
 

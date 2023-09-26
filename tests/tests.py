@@ -13,7 +13,7 @@ class TestRegistry(TestRegistryBase):
         return StoragePluginRegistry()
 
     def get_test_plugin_name(self) -> str:
-        return "zenodo"
+        return "http"
 
     def validate_plugin(self, plugin: PluginBase):
         assert plugin._storage_settings_cls is not None
