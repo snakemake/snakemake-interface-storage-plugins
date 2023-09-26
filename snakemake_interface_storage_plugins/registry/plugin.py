@@ -20,6 +20,10 @@ class Plugin(PluginBase):
     _name: str
 
     @property
+    def support_tagged_values(self) -> bool:
+        return True
+
+    @property
     def name(self):
         return self._name
 
