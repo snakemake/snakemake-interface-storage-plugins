@@ -19,6 +19,9 @@ from snakemake_interface_storage_plugins.io import IOCacheStorageInterface, Mtim
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
 
+retry_decorator = retry(tries=3, delay=3, backoff=2, logger=get_logger())
+
+
 class StaticStorageObjectProxy(ObjectProxy):
     """Proxy that implements static-ness for remote objects.
 
@@ -140,13 +143,3 @@ class StorageObjectBase(ABC):
             self.store_object()
         except Exception as e:
             raise WorkflowError(e)
-
-
-class AbstractStorageRetryObject(StorageObjectBase, ABC):
-    @retry(tries=3, delay=3, backoff=2, logger=get_logger())
-    def retrieve(self):
-        return super().retrieve()
-
-    @retry(tries=3, delay=3, backoff=2, logger=get_logger())
-    def store(self):
-        super().store()
