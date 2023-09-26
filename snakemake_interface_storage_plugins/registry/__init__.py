@@ -6,7 +6,7 @@ __license__ = "MIT"
 import types
 from typing import Mapping
 from snakemake_interface_storage_plugins.settings import (
-    StorageSettingsBase,
+    StorageProviderSettingsBase,
 )
 
 from snakemake_interface_common.plugin_registry.attribute_types import (
@@ -38,7 +38,7 @@ class StoragePluginRegistry(PluginRegistryBase):
     def expected_attributes(self) -> Mapping[str, AttributeType]:
         return {
             "StorageSettings": AttributeType(
-                cls=StorageSettingsBase,
+                cls=StorageProviderSettingsBase,
                 mode=AttributeMode.OPTIONAL,
                 kind=AttributeKind.CLASS,
             ),

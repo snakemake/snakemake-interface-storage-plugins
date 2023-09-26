@@ -6,7 +6,7 @@ __license__ = "MIT"
 from dataclasses import dataclass
 from typing import Optional, Type
 from snakemake_interface_storage_plugins.settings import (
-    StorageSettingsBase,
+    StorageProviderSettingsBase,
 )
 import snakemake_interface_storage_plugins._common as common
 
@@ -16,7 +16,7 @@ from snakemake_interface_common.plugin_registry.plugin import PluginBase
 @dataclass
 class Plugin(PluginBase):
     storage_provider: object
-    _storage_settings_cls: Optional[Type[StorageSettingsBase]]
+    _storage_settings_cls: Optional[Type[StorageProviderSettingsBase]]
     _name: str
 
     @property
