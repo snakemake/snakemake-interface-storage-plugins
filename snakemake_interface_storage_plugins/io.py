@@ -53,7 +53,7 @@ class AnnotatedString(str, AnnotatedStringStorageInterface):
 
     def is_callable(self) -> bool:
         return self.callable is not None
-    
+
     @property
     def flags(self) -> Dict[str, Any]:
         return self._flags
