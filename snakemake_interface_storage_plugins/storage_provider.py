@@ -39,9 +39,9 @@ class StorageProviderBase(ABC):
     def object(
         self,
         query: Any,
-        keep_local: Optional[bool]=None, 
-        retrieve: bool=True, 
-        static: bool=False,
+        keep_local: Optional[bool] = None,
+        retrieve: bool = True,
+        static: bool = False,
     ):
         if keep_local is None:
             keep_local = self.keep_local

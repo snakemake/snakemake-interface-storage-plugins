@@ -4,18 +4,12 @@ __email__ = "tomkinsc@broadinstitute.org"
 __license__ = "MIT"
 
 import os
-import sys
-import re
-from functools import partial
 from abc import ABC, abstractmethod
-from contextlib import contextmanager
 import shutil
 from typing import Any, Optional, Sequence
-import hashlib
 
 from wrapt import ObjectProxy
 from reretry import retry
-from connection_pool import ConnectionPool
 import copy
 
 from snakemake_interface_common.exceptions import WorkflowError
@@ -53,7 +47,7 @@ class StaticStorageObjectProxy(ObjectProxy):
 
 class StorageObjectBase(ABC):
     """This is an abstract class to be used to derive storage object classes for
-    different cloud storage providers. For example, there could be classes for 
+    different cloud storage providers. For example, there could be classes for
     interacting with Amazon AWS S3 and Google Cloud Storage, both derived from this
     common base class.
     """
@@ -73,7 +67,7 @@ class StorageObjectBase(ABC):
     def local_path(self):
         """Return the local paths that would represent the query."""
         return self.provider.local_prefix / self.local_suffix()
-    
+
     @abstractmethod
     def local_suffix(self):
         """Return a unique suffix for the local path of the object."""
@@ -128,7 +122,7 @@ class StorageObjectBase(ABC):
     @abstractmethod
     def remove(self):
         ...
-    
+
     def retrieve(self):
         try:
             return self.retrieve_object()
