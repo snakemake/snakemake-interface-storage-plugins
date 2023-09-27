@@ -57,7 +57,7 @@ class StorageObjectBase(ABC):
 
     def __init__(
         self,
-        query: Any,
+        query: str,
         keep_local: bool,
         retrieve: bool,
         provider: StorageProviderBase,
@@ -66,16 +66,15 @@ class StorageObjectBase(ABC):
         self.keep_local = keep_local
         self.retrieve = retrieve
         self.provider = provider
-        self.validate_query()
+    
+    def is_valid_query(self) -> bool:
+        """Return True is the query is valid for this storage provider.
+        """
+        return self.provider.is_valid_query(self.query)
 
     def local_path(self):
-        """Return the local paths that would represent the query."""
+        """Return the local path that would represent the query."""
         return self.provider.local_prefix / self.local_suffix()
-
-    @abstractmethod
-    def validate_query(self):
-        """Validate the query and raise a WorkflowError if it is invalid."""
-        ...
 
     @abstractmethod
     def local_suffix(self):
@@ -85,6 +84,7 @@ class StorageObjectBase(ABC):
         # part and any optional parameters if that does not hamper the uniqueness.
         ...
 
+class StorageObjectRead(StorageObjectBase):
     @abstractmethod
     async def inventory(self, cache: IOCacheStorageInterface):
         """From this file, try to find as much existence and modification date
@@ -118,14 +118,6 @@ class StorageObjectBase(ABC):
     def retrieve_object(self):
         ...
 
-    @abstractmethod
-    def store_object(self):
-        ...
-
-    @abstractmethod
-    def remove(self):
-        ...
-
     def managed_retrieve(self):
         try:
             return self.retrieve_object()
@@ -137,6 +129,16 @@ class StorageObjectBase(ABC):
                     shutil.rmtree(local_path)
                 os.remove(local_path)
             raise WorkflowError(e)
+
+
+class StorageObjectReadWrite(StorageObjectRead):
+    @abstractmethod
+    def store_object(self):
+        ...
+
+    @abstractmethod
+    def remove(self):
+        ...
 
     def managed_store(self):
         try:
