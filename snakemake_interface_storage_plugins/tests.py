@@ -38,9 +38,12 @@ class TestStorageBase(ABC):
         obj = obj.flags["storage_object"]
 
         if not self.retrieve_only:
+            obj.local_path().parent.mkdir(parents=True, exist_ok=True)
             with open(obj.local_path(), "w") as f:
                 f.write("test")
+                f.flush()
             obj.managed_store()
+            obj.local_path().unlink()
 
         assert obj.exists()
         print(obj.mtime())

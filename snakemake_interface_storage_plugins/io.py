@@ -27,6 +27,13 @@ WILDCARD_REGEX = re.compile(
     re.VERBOSE,
 )
 
+def get_constant_prefix(pattern: str):
+    first_wildcard = WILDCARD_REGEX.search(pattern)
+    if first_wildcard:
+        return pattern[: first_wildcard.start()]
+    else:
+        return pattern
+
 
 class AnnotatedStringStorageInterface(ABC):
     @property

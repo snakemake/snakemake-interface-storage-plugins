@@ -50,6 +50,10 @@ class StorageProviderBase(ABC):
         self.settings = settings
         self.keep_local = keep_local
         self.is_default = is_default
+        self.__post_init__()
+
+    def __post_init__(self):
+        pass
 
     @classmethod
     @abstractmethod

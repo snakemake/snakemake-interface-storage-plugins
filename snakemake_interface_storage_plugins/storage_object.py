@@ -6,7 +6,7 @@ __license__ = "MIT"
 import os
 from abc import ABC, abstractmethod
 import shutil
-from typing import Optional
+from typing import Iterable, Optional
 
 from wrapt import ObjectProxy
 from reretry import retry
@@ -33,7 +33,7 @@ class StaticStorageObjectProxy(ObjectProxy):
     def exists(self):
         return True
 
-    def mtime(self):
+    def mtime(self) -> float:
         return float("-inf")
 
     def is_newer(self, time):
@@ -66,6 +66,10 @@ class StorageObjectBase(ABC):
         self.keep_local = keep_local
         self.retrieve = retrieve
         self.provider = provider
+        self.__post_init__()
+
+    def __post_init__(self):
+        pass
 
     def is_valid_query(self) -> bool:
         """Return True is the query is valid for this storage provider."""
@@ -107,7 +111,7 @@ class StorageObjectRead(StorageObjectBase):
         ...
 
     @abstractmethod
-    def mtime(self) -> Mtime:
+    def mtime(self) -> float:
         ...
 
     @abstractmethod
@@ -119,6 +123,7 @@ class StorageObjectRead(StorageObjectBase):
         ...
 
     def managed_retrieve(self):
+        self.local_path().parent.mkdir(parents=True, exist_ok=True)
         try:
             return self.retrieve_object()
         except Exception as e:
@@ -127,11 +132,12 @@ class StorageObjectRead(StorageObjectBase):
             if os.path.exists(local_path):
                 if os.path.isdir(local_path):
                     shutil.rmtree(local_path)
-                os.remove(local_path)
-            raise WorkflowError(e)
+                else:
+                    os.remove(local_path)
+            raise WorkflowError(f"Failed to retrieve storage object from {self.query}", e)
 
 
-class StorageObjectReadWrite(StorageObjectRead):
+class StorageObjectWrite(StorageObjectBase):
     @abstractmethod
     def store_object(self):
         ...
@@ -144,4 +150,13 @@ class StorageObjectReadWrite(StorageObjectRead):
         try:
             self.store_object()
         except Exception as e:
-            raise WorkflowError(e)
+            raise WorkflowError(f"Failed to store output in storage {self.query}", e)
+
+
+class StorageObjectGlob(StorageObjectBase):
+    @abstractmethod
+    def list_candidate_matches(self) -> Iterable[str]:
+        """Return a list of candidate matches in the storage for the query."""
+        # This is used by glob_wildcards() to find matches for wildcards in the query.
+        # The method has to return concretized queries without any remaining wildcards.
+        ...
