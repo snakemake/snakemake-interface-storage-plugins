@@ -6,7 +6,7 @@ __license__ = "MIT"
 import os
 from abc import ABC, abstractmethod
 import shutil
-from typing import Any, Optional, Sequence
+from typing import Optional
 
 from wrapt import ObjectProxy
 from reretry import retry
@@ -66,10 +66,9 @@ class StorageObjectBase(ABC):
         self.keep_local = keep_local
         self.retrieve = retrieve
         self.provider = provider
-    
+
     def is_valid_query(self) -> bool:
-        """Return True is the query is valid for this storage provider.
-        """
+        """Return True is the query is valid for this storage provider."""
         return self.provider.is_valid_query(self.query)
 
     def local_path(self):
@@ -83,6 +82,7 @@ class StorageObjectBase(ABC):
         # For example, if the query is a URL, it can be the URL without the protocol
         # part and any optional parameters if that does not hamper the uniqueness.
         ...
+
 
 class StorageObjectRead(StorageObjectBase):
     @abstractmethod

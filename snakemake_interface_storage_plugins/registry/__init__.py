@@ -4,11 +4,11 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 import types
-from typing import Iterable, List, Mapping, Sequence
+from typing import List, Mapping
+
 from snakemake_interface_storage_plugins.settings import (
     StorageProviderSettingsBase,
 )
-
 from snakemake_interface_common.plugin_registry.attribute_types import (
     AttributeKind,
     AttributeMode,
@@ -24,7 +24,11 @@ class StoragePluginRegistry(PluginRegistryBase):
     """This class is a singleton that holds all registered executor plugins."""
 
     def get_registered_read_write_plugins(self) -> List[str]:
-        return [plugin.name for plugin in self.plugins.values() if plugin.storage_provider.is_read_write]
+        return [
+            plugin.name
+            for plugin in self.plugins.values()
+            if plugin.storage_provider.is_read_write
+        ]
 
     @property
     def module_prefix(self) -> str:

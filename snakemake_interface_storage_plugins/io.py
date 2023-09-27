@@ -4,9 +4,6 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 from abc import ABC, abstractmethod
-import collections
-from itertools import chain
-import os
 import re
 from typing import Any, Dict, Union
 

@@ -62,7 +62,9 @@ class StorageProviderBase(ABC):
 
     @property
     def is_read_write(self) -> bool:
-        from snakemake_interface_storage_plugins.storage_object import StorageObjectReadWrite
+        from snakemake_interface_storage_plugins.storage_object import (
+            StorageObjectReadWrite,
+        )
 
         return isinstance(self.storage_object_cls, StorageObjectReadWrite)
 
@@ -100,7 +102,7 @@ class StorageProviderBase(ABC):
     @abstractmethod
     def list_objects(self, query: str) -> Iterable[str]:
         """Return an iterator over all objects in the storage that match the query.
-        
+
         This is optional and can raise a NotImplementedError() instead.
         """
         ...
