@@ -6,8 +6,8 @@ __license__ = "MIT"
 
 from pathlib import Path
 import sys
-from abc import ABC
-from typing import Any, Optional
+from abc import ABC, abstractmethod
+from typing import Any, Iterable, Optional
 from snakemake_interface_storage_plugins.io import (
     flag,
 )
@@ -60,3 +60,11 @@ class StorageProviderBase(ABC):
             storage_object = StaticStorageObjectProxy(storage_object)
 
         return flag(storage_object.local_path(), "storage_object", storage_object)
+
+    @abstractmethod
+    def list_objects(self, query: Any) -> Iterable[str]:
+        """Return an iterator over all objects in the storage that match the query.
+        
+        This is optional and can raise a NotImplementedError() instead.
+        """
+        ...

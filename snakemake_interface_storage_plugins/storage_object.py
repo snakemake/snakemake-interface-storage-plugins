@@ -123,12 +123,6 @@ class StorageObjectBase(ABC):
         ...
 
     @abstractmethod
-    def list_all_below_ancestor(self) -> Sequence[str]:
-        """List all items below the primary ancestor of this object
-        (e.g. the bucket name)."""
-        ...
-
-    @abstractmethod
     def remove(self):
         ...
 
