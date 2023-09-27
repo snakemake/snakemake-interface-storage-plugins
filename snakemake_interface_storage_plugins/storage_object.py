@@ -15,7 +15,7 @@ import copy
 from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
 
-from snakemake_interface_storage_plugins.io import IOCacheStorageInterface, Mtime
+from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
 
@@ -68,7 +68,7 @@ class StorageObjectBase(ABC):
         self.provider = provider
         self.__post_init__()
 
-    def __post_init__(self):
+    def __post_init__(self):  # noqa B027
         pass
 
     def is_valid_query(self) -> bool:
@@ -134,7 +134,9 @@ class StorageObjectRead(StorageObjectBase):
                     shutil.rmtree(local_path)
                 else:
                     os.remove(local_path)
-            raise WorkflowError(f"Failed to retrieve storage object from {self.query}", e)
+            raise WorkflowError(
+                f"Failed to retrieve storage object from {self.query}", e
+            )
 
 
 class StorageObjectWrite(StorageObjectBase):

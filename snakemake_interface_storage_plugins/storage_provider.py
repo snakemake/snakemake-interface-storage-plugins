@@ -52,7 +52,7 @@ class StorageProviderBase(ABC):
         self.is_default = is_default
         self.__post_init__()
 
-    def __post_init__(self):
+    def __post_init__(self):  # noqa B027
         pass
 
     @classmethod
