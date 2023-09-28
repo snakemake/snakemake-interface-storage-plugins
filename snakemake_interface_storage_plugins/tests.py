@@ -65,7 +65,7 @@ class TestStorageBase(ABC):
         finally:
             if not self.retrieve_only and stored:
                 obj.remove()
-    
+
     def test_storage_not_existing(self, tmp_path):
         obj = self._get_obj(tmp_path, self.get_query_not_existing())
 
