@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.0.1...v1.0.2) (2023-09-28)
+
+
+### Bug Fixes
+
+* remove object after test ([b55c77c](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/b55c77c6d0f34de4c166832ea8d631becc978d96))
+
 ## [1.0.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.0.0...v1.0.1) (2023-09-27)
 
 
