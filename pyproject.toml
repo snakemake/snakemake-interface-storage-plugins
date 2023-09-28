@@ -16,7 +16,7 @@ connection-pool = "^0.0.3"
 black = "^22.1.0"
 coverage = {extras = ["toml"], version = "^6.3.1"}
 flake8 = "^4.0.1"
-flake8-bugbear = "^22.1.11"
+flake8-bugbear = "^23.3.12"
 pytest = "^7.0"
 snakemake-storage-plugin-http = "^0.1.0"
 snakemake = {git="https://github.com/snakemake/snakemake.git", branch="feat/storage-plugins"}
