@@ -5,7 +5,7 @@ __license__ = "MIT"
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Optional, Type
+from typing import Optional, Type
 
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 from snakemake_interface_storage_plugins.settings import (
@@ -25,17 +25,25 @@ class TestStorageBase(ABC):
         return None
 
     @abstractmethod
-    def get_query(self) -> Any:
+    def get_query(self) -> str:
         ...
 
-    def test_storage(self, tmp_path):
+    @abstractmethod
+    def get_query_not_existing(self) -> str:
+        ...
+
+    def _get_obj(self, tmp_path, query):
         provider = self.get_storage_provider_cls()(
             local_prefix=Path(tmp_path),
             settings=self.get_storage_provider_settings(),
         )
 
-        obj = provider.object(self.get_query())
+        obj = provider.object(query)
         obj = obj.flags["storage_object"]
+        return obj
+
+    def test_storage(self, tmp_path):
+        obj = self._get_obj(tmp_path, self.get_query())
 
         stored = False
         try:
@@ -57,3 +65,8 @@ class TestStorageBase(ABC):
         finally:
             if not self.retrieve_only and stored:
                 obj.remove()
+    
+    def test_storage_not_existing(self, tmp_path):
+        obj = self._get_obj(tmp_path, self.get_query_not_existing())
+
+        assert not obj.exists()
