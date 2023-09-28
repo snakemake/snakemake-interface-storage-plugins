@@ -72,7 +72,6 @@ class StorageProviderBase(ABC):
 
         return isinstance(self.storage_object_cls, StorageObjectReadWrite)
 
-    @property
     def storage_object_cls(self):
         provider = sys.modules[self.__module__]  # get module of derived class
         return provider.StorageObject
@@ -91,7 +90,7 @@ class StorageProviderBase(ABC):
         if keep_local is None:
             keep_local = self.keep_local
 
-        storage_object = self.storage_object_cls(
+        storage_object = self.storage_object_cls()(
             query=query,
             keep_local=keep_local,
             retrieve=retrieve,
