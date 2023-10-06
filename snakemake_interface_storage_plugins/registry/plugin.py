@@ -8,7 +8,7 @@ from typing import Optional, Type
 from snakemake_interface_storage_plugins.settings import (
     StorageProviderSettingsBase,
 )
-import snakemake_interface_storage_plugins._common as common
+from snakemake_interface_storage_plugins import common
 
 from snakemake_interface_common.plugin_registry.plugin import PluginBase
 

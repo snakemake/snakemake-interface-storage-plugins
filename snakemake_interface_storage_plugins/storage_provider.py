@@ -4,11 +4,17 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from fractions import Fraction
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
-from typing import Iterable, Optional
+from typing import Any, Iterable, Optional
+
+from throttler import Throttler
+from snakemake_interface_storage_plugins.common import Operation
+
 from snakemake_interface_storage_plugins.io import (
     flag,
 )
@@ -50,10 +56,52 @@ class StorageProviderBase(ABC):
         self.settings = settings
         self.keep_local = keep_local
         self.is_default = is_default
+        self._rate_limiters = dict()
         self.__post_init__()
 
     def __post_init__(self):  # noqa B027
         pass
+
+    def rate_limiter(self, query: str, operation: Operation):
+        if not self.use_rate_limiter():
+            return self._noop_context()
+        else:
+            key = self.rate_limiter_key(query, operation)
+            if key not in self._rate_limiters:
+                max_status_checks_frac = Fraction(
+                    self.settings.max_requests_per_second
+                    or self.default_max_requests_per_second()
+                ).limit_denominator()
+                self._rate_limiters[key] = Throttler(
+                    rate_limit=max_status_checks_frac.numerator,
+                    period=max_status_checks_frac.denominator,
+                )
+            return self._rate_limiters[key]
+
+    @asynccontextmanager
+    async def _noop_context(self):
+        yield
+
+    @abstractmethod
+    def rate_limiter_key(self, query: str, operation: Operation) -> Any:
+        """Return a key for identifying a rate limiter given a query and an operation.
+
+        This is used to identify a rate limiter for the query.
+        E.g. for a storage provider like http that would be the host name.
+        For s3 it might be just the endpoint URL.
+        """
+        ...
+
+    @abstractmethod
+    def default_max_requests_per_second(self) -> float:
+        """Return the default maximum number of requests per second for this storage
+        provider."""
+        ...
+
+    @abstractmethod
+    def use_rate_limiter(self) -> bool:
+        """Return False if no rate limiting is needed for this provider."""
+        ...
 
     @classmethod
     @abstractmethod

@@ -3,7 +3,8 @@ __copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Optional
 
 
 import snakemake_interface_common.plugin_registry.plugin
@@ -19,4 +20,11 @@ class StorageProviderSettingsBase(
     named 'StorageSettings'.
     """
 
-    pass
+    max_requests_per_second: Optional[float] = field(
+        default=None,
+        metadata={
+            "help": "Maximum number of requests per second for this storage provider. "
+            "If nothing is specified, the default implemented by the storage plugin is "
+            "used."
+        },
+    )

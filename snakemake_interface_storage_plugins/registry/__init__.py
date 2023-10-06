@@ -16,7 +16,7 @@ from snakemake_interface_common.plugin_registry.attribute_types import (
 )
 from snakemake_interface_storage_plugins.registry.plugin import Plugin
 from snakemake_interface_common.plugin_registry import PluginRegistryBase
-from snakemake_interface_storage_plugins import _common as common
+from snakemake_interface_storage_plugins import common
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
 

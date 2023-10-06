@@ -47,7 +47,7 @@ class AnnotatedStringStorageInterface(ABC):
         ...
 
     def is_flagged(self, flag: str) -> bool:
-        return flag in self.flags and self.flags[flag]
+        return flag in self.flags and bool(self.flags[flag])
 
 
 class AnnotatedString(str, AnnotatedStringStorageInterface):
