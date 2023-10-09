@@ -5,6 +5,7 @@ __license__ = "MIT"
 
 import os
 from abc import ABC, abstractmethod
+from pathlib import Path
 import shutil
 from typing import Iterable, Optional
 
@@ -67,18 +68,26 @@ class StorageObjectBase(ABC):
         self.keep_local = keep_local
         self.retrieve = retrieve
         self.provider = provider
+        self._overwrite_local_path = None
         self.__post_init__()
 
     def __post_init__(self):  # noqa B027
         pass
 
+    def set_local_path(self, path: Path):
+        """Set a custom local path for this storage object."""
+        self._overwrite_local_path = path
+
     def is_valid_query(self) -> bool:
         """Return True is the query is valid for this storage provider."""
         return self.provider.is_valid_query(self.query)
 
-    def local_path(self):
+    def local_path(self) -> Path:
         """Return the local path that would represent the query."""
-        return self.provider.local_prefix / self.local_suffix()
+        if self._overwrite_local_path:
+            return self._overwrite_local_path
+        else:
+            return self.provider.local_prefix / self.local_suffix()
 
     @abstractmethod
     def local_suffix(self):
