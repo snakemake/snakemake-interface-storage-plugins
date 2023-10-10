@@ -37,6 +37,12 @@ class StorageQueryValidationResult:
         return self.valid
 
 
+@dataclass
+class ExampleQuery:
+    query: str
+    description: str
+
+
 class StorageProviderBase(ABC):
     """This is an abstract class to be used to derive remote provider classes.
     These might be used to hold common credentials,
@@ -81,6 +87,12 @@ class StorageProviderBase(ABC):
     @asynccontextmanager
     async def _noop_context(self):
         yield
+
+    @classmethod
+    @abstractmethod
+    def example_query(cls) -> ExampleQuery:
+        """Return an example query with description for this storage provider."""
+        ...
 
     @abstractmethod
     def rate_limiter_key(self, query: str, operation: Operation) -> Any:
