@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.0.2...v1.1.0) (2023-10-11)
+
+
+### Features
+
+* extend test cases ([6b49597](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/6b49597d5d96133756df28994078257bb7afb0c6))
+* require example query to be provided ([f48b3f0](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/f48b3f07e1ea9fbb5fcb49890f6167d7c75a8b07))
+
+
+### Bug Fixes
+
+* adapt to changes in snakemake-interface-common ([a7da931](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/a7da9319d54284df4b9cd5e9fabd8b52098a50e3))
+* update deps ([856ba18](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/856ba180c6c1fa9d8b754cc4f1dbc022e01aa907))
+
 ## [1.0.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.0.1...v1.0.2) (2023-09-28)
 
 
