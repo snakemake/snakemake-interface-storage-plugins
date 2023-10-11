@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snakemake-interface-storage-plugins"
-version = "1.0.2"
+version = "1.1.0"
 description = "This package provides a stable interface for interactions between Snakemake and its storage plugins."
 authors = ["Johannes Koester <johannes.koester@uni-due.de>"]
 readme = "README.md"
@@ -14,9 +14,9 @@ connection-pool = "^0.0.3"
 throttler = "^1.2.2"
 
 [tool.poetry.dev-dependencies]
-black = "^22.1.0"
-coverage = {extras = ["toml"], version = "^6.3.1"}
-flake8 = "^4.0.1"
+black = "^23.9.1"
+coverage = {extras = ["toml"], version = "^7.3.2"}
+flake8 = "^6.1.0"
 flake8-bugbear = "^23.3.12"
 pytest = "^7.0"
 snakemake-storage-plugin-http = "^0.1.0"
