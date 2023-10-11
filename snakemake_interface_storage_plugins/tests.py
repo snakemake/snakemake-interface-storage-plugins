@@ -52,7 +52,7 @@ class TestStorageBase(ABC):
                 with open(obj.local_path(), "w") as f:
                     f.write("test")
                     f.flush()
-                obj.managed_store()
+                obj.store_object()
                 stored = True
                 obj.local_path().unlink()
 
@@ -60,7 +60,7 @@ class TestStorageBase(ABC):
             print(obj.mtime())
             print(obj.size())
 
-            obj.managed_retrieve()
+            obj.retrieve_object()
 
         finally:
             if not self.retrieve_only and stored:
