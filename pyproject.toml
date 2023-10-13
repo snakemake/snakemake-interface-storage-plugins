@@ -4,6 +4,7 @@ version = "1.1.1"
 description = "This package provides a stable interface for interactions between Snakemake and its storage plugins."
 authors = ["Johannes Koester <johannes.koester@uni-due.de>"]
 readme = "README.md"
+homepage = "https://github.com/snakemake/snakemake-interface-storage-plugins"
 
 [tool.poetry.dependencies]
 python = "^3.9"
