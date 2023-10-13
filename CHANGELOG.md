@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.1.1...v1.1.2) (2023-10-13)
+
+
+### Bug Fixes
+
+* fix testcase for writable storage provider ([32f473a](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/32f473aee2bbb835888202654a2092297d27ffed))
+* remove superfluous dependency ([12b9061](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/12b90619313ce35b2748abf1f6095fd0a0d4974b))
+
 ## [1.1.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.1.0...v1.1.1) (2023-10-11)
 
 
