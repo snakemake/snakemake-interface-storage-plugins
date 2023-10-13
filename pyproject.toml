@@ -10,7 +10,6 @@ python = "^3.9"
 snakemake-interface-common = "^1.11.0"
 wrapt = "^1.15.0"
 reretry = "^0.11.8"
-connection-pool = "^0.0.3"
 throttler = "^1.2.2"
 
 [tool.poetry.dev-dependencies]
