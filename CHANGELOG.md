@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.1.2...v1.2.0) (2023-10-17)
+
+
+### Features
+
+* migrate flagging code into main snakemake ([974f05d](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/974f05d18a180cb917bf8ca42488ac9ca566aae5))
+
+
+### Bug Fixes
+
+* add homepage ([b9846e0](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/b9846e0b607c8220bf32ec21d276188cd032d67d))
+
 ## [1.1.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.1.1...v1.1.2) (2023-10-13)
 
 
