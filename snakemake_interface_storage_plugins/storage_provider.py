@@ -161,7 +161,7 @@ class StorageProviderBase(ABC):
         if static:
             storage_object = StaticStorageObjectProxy(storage_object)
 
-        return flag(storage_object.local_path(), "storage_object", storage_object)
+        return storage_object
 
     @abstractmethod
     def list_objects(self, query: str) -> Iterable[str]:
