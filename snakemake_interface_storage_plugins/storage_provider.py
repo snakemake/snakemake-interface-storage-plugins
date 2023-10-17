@@ -15,9 +15,6 @@ from typing import Any, Iterable, Optional
 from throttler import Throttler
 from snakemake_interface_storage_plugins.common import Operation
 
-from snakemake_interface_storage_plugins.io import (
-    flag,
-)
 from snakemake_interface_storage_plugins.settings import StorageProviderSettingsBase
 
 

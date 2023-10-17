@@ -7,8 +7,6 @@ from abc import abstractmethod
 import re
 from typing import Dict
 
-from snakemake_interface_common.utils import not_iterable
-
 
 WILDCARD_REGEX = re.compile(
     r"""
