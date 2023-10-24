@@ -38,9 +38,7 @@ class TestStorageBase(ABC):
             settings=self.get_storage_provider_settings(),
         )
 
-        obj = provider.object(query)
-        obj = obj.flags["storage_object"]
-        return obj
+        return provider.object(query)
 
     def test_storage(self, tmp_path):
         obj = self._get_obj(tmp_path, self.get_query())
