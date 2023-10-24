@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.2.0...v1.2.1) (2023-10-24)
+
+
+### Bug Fixes
+
+* update dependencies ([96df30e](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/96df30e782cf2f4fa5e341177b57178223c49953))
+
 ## [1.2.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.1.2...v1.2.0) (2023-10-17)
 
 
