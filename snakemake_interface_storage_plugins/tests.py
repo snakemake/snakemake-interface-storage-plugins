@@ -11,6 +11,7 @@ from snakemake_interface_storage_plugins.storage_provider import StorageProvider
 from snakemake_interface_storage_plugins.settings import (
     StorageProviderSettingsBase,
 )
+from snakemake.io import IOCache
 
 
 class TestStorageBase(ABC):
@@ -68,3 +69,8 @@ class TestStorageBase(ABC):
         obj = self._get_obj(tmp_path, self.get_query_not_existing())
 
         assert not obj.exists()
+
+    def test_inventory(self, tmp_path):
+        obj = self._get_obj(tmp_path, self.get_query())
+        cache = IOCache()
+        obj.inventory(cache)

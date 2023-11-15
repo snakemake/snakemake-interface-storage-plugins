@@ -89,6 +89,13 @@ class StorageObjectBase(ABC):
         else:
             return self.provider.local_prefix / self.local_suffix()
 
+    def cache_key(self, local_suffix: Optional[str] = None) -> str:
+        """Return a key for the cache."""
+        assert (
+            self._overwrite_local_path is None
+        ), "bug: no cache key applicable if local path is overwritten"
+        return str(self.provider.local_prefix / (local_suffix or self.local_suffix()))
+
     @abstractmethod
     def local_suffix(self):
         """Return a unique suffix for the local path of the object."""
