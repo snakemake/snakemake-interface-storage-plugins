@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.0.0...v2.0.1) (2023-11-15)
+
+
+### Miscellaneous Chores
+
+* release 2.0.1 ([c0e9d30](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/c0e9d3085507fcd8bd6e8a2ceb09330fe48dfb20))
+
 ## [2.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.3.1...v2.0.0) (2023-11-15)
 
 
