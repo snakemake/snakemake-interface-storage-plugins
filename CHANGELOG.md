@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.3.0...v1.3.1) (2023-11-15)
+
+
+### Bug Fixes
+
+* create local storage prefix if it is not yet present ([ec5ff76](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/ec5ff76dbdaa63ed8ce41e3927ae42f3bd7145e3))
+
 ## [1.3.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.2.3...v1.3.0) (2023-11-15)
 
 
