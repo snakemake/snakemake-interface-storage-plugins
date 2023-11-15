@@ -72,5 +72,5 @@ class TestStorageBase(ABC):
 
     def test_inventory(self, tmp_path):
         obj = self._get_obj(tmp_path, self.get_query())
-        cache = IOCache()
+        cache = IOCache(max_wait_time=10)
         obj.inventory(cache)
