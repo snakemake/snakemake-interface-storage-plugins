@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.2.3...v1.3.0) (2023-11-15)
+
+
+### Features
+
+* add cache_key method ([2b571d0](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/2b571d0a5b5927a9934d7221682ee254311c5ce1))
+
 ## [1.2.3](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.2.2...v1.2.3) (2023-10-24)
 
 
