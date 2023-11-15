@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.3.1...v2.0.0) (2023-11-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* add tmp_path to query methods in test suite
+
+### Features
+
+* add tmp_path to query methods in test suite ([5cfcf62](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/5cfcf625c4f4bf5f41f742c484a449ae74b2d75a))
+
+
+### Bug Fixes
+
+* IOCache call in test suite ([00abf1b](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/00abf1b09515590c82262fd0e2621b1f86cce6d1))
+
+
+### Documentation
+
+* update readme ([63b5a4b](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/63b5a4bddf621284b63491d2a0798460d05b5c55))
+
 ## [1.3.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v1.3.0...v1.3.1) (2023-11-15)
 
 
