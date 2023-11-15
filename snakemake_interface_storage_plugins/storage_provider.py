@@ -13,8 +13,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Iterable, Optional
 
 from throttler import Throttler
+from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_storage_plugins.common import Operation
-
 from snakemake_interface_storage_plugins.settings import StorageProviderSettingsBase
 
 
@@ -55,6 +55,12 @@ class StorageProviderBase(ABC):
         keep_local=False,
         is_default=False,
     ):
+        try:
+            local_prefix.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            raise WorkflowError(
+                f"Failed to create local storage prefix {local_prefix}", e
+            )
         self.local_prefix = local_prefix
         self.settings = settings
         self.keep_local = keep_local
