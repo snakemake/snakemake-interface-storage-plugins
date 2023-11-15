@@ -26,23 +26,23 @@ class TestStorageBase(ABC):
         return None
 
     @abstractmethod
-    def get_query(self) -> str:
+    def get_query(self, tmp_path) -> str:
         ...
 
     @abstractmethod
-    def get_query_not_existing(self) -> str:
+    def get_query_not_existing(self, tmp_path) -> str:
         ...
 
     def _get_obj(self, tmp_path, query):
         provider = self.get_storage_provider_cls()(
-            local_prefix=Path(tmp_path),
+            local_prefix=Path(tmp_path) / "local_prefix",
             settings=self.get_storage_provider_settings(),
         )
 
         return provider.object(query)
 
     def test_storage(self, tmp_path):
-        obj = self._get_obj(tmp_path, self.get_query())
+        obj = self._get_obj(tmp_path, self.get_query(tmp_path))
 
         stored = False
         try:
@@ -66,11 +66,11 @@ class TestStorageBase(ABC):
                 obj.remove()
 
     def test_storage_not_existing(self, tmp_path):
-        obj = self._get_obj(tmp_path, self.get_query_not_existing())
+        obj = self._get_obj(tmp_path, self.get_query_not_existing(tmp_path))
 
         assert not obj.exists()
 
     def test_inventory(self, tmp_path):
-        obj = self._get_obj(tmp_path, self.get_query())
+        obj = self._get_obj(tmp_path, self.get_query(tmp_path))
         cache = IOCache(max_wait_time=10)
         obj.inventory(cache)
