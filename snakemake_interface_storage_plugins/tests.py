@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Optional, Type
 
-from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
+from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase, StorageQueryValidationResult
 from snakemake_interface_storage_plugins.settings import (
     StorageProviderSettingsBase,
 )
@@ -74,7 +74,9 @@ class TestStorageBase(ABC):
 
     def test_query_validation(self, tmp_path):
         provider = self._get_provider(tmp_path)
-        provider.is_valid_query(self.get_query(tmp_path))
+        res = provider.is_valid_query(self.get_query(tmp_path))
+        assert isinstance(res, StorageQueryValidationResult)
+        assert res
 
     def _get_provider(self, tmp_path):
         return self.get_storage_provider_cls()(
