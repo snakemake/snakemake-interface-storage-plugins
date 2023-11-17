@@ -7,7 +7,10 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Optional, Type
 
-from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase, StorageQueryValidationResult
+from snakemake_interface_storage_plugins.storage_provider import (
+    StorageProviderBase,
+    StorageQueryValidationResult,
+)
 from snakemake_interface_storage_plugins.settings import (
     StorageProviderSettingsBase,
 )
