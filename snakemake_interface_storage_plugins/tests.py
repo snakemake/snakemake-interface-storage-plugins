@@ -34,10 +34,7 @@ class TestStorageBase(ABC):
         ...
 
     def _get_obj(self, tmp_path, query):
-        provider = self.get_storage_provider_cls()(
-            local_prefix=Path(tmp_path) / "local_prefix",
-            settings=self.get_storage_provider_settings(),
-        )
+        provider = self._get_provider(tmp_path)
 
         return provider.object(query)
 
@@ -74,3 +71,13 @@ class TestStorageBase(ABC):
         obj = self._get_obj(tmp_path, self.get_query(tmp_path))
         cache = IOCache(max_wait_time=10)
         obj.inventory(cache)
+
+    def test_query_validation(self, tmp_path):
+        provider = self._get_provider(tmp_path)
+        provider.is_valid_query(self.get_query(tmp_path))
+
+    def _get_provider(self, tmp_path):
+        return self.get_storage_provider_cls()(
+            local_prefix=Path(tmp_path) / "local_prefix",
+            settings=self.get_storage_provider_settings(),
+        )
