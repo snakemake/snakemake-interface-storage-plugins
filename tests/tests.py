@@ -4,6 +4,7 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 from typing import List, Optional, Type
+from snakemake_interface_storage_plugins.io import get_constant_prefix
 from snakemake_interface_storage_plugins.registry import StoragePluginRegistry
 from snakemake_interface_common.plugin_registry.tests import TestRegistryBase
 from snakemake_interface_common.plugin_registry.plugin import PluginBase, SettingsBase
@@ -57,3 +58,31 @@ class TestTestStorageBase(TestStorageBase):
 
     def get_example_args(self) -> List[str]:
         return []
+
+
+def test_get_constant_prefix():
+    assert get_constant_prefix("foo/bar/{wildcard}/baz") == "foo/bar/"
+    assert (
+        get_constant_prefix("foo/bar/{wildcard}/baz", strip_incomplete_parts=True)
+        == "foo/bar/"
+    )
+    assert (
+        get_constant_prefix("foo/bar{wildcard}/baz/", strip_incomplete_parts=True)
+        == "foo/"
+    )
+    assert (
+        get_constant_prefix("foo/bar{wildcard}/baz", strip_incomplete_parts=False)
+        == "foo/bar"
+    )
+    assert (
+        get_constant_prefix(
+            "{wildcard}/foo/bar/{wildcard}/baz", strip_incomplete_parts=True
+        )
+        == ""
+    )
+    assert (
+        get_constant_prefix(
+            "{wildcard}/foo/bar/{wildcard}/baz", strip_incomplete_parts=False
+        )
+        == ""
+    )

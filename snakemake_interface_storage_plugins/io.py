@@ -26,12 +26,29 @@ WILDCARD_REGEX = re.compile(
 )
 
 
-def get_constant_prefix(pattern: str):
+def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False):
+    """Return constant prefix of a pattern, removing everything from the first
+    wildcard on.
+
+    If strip_incomplete_parts is set, trailing parts that do not end with
+    a slash (/) are removed as well.
+    """
     first_wildcard = WILDCARD_REGEX.search(pattern)
     if first_wildcard:
-        return pattern[: first_wildcard.start()]
+        prefix = pattern[: first_wildcard.start()]
+        if strip_incomplete_parts:
+            if "/" in prefix:
+                prefix = prefix.rsplit("/", 1)[0]
+            else:
+                first_slash_idx = pattern.find("/")
+                if first_slash_idx != -1 and first_slash_idx > first_wildcard.start():
+                    # the first slash is after the first wildcard, hence the prefix
+                    # is incomplete
+                    prefix = ""
     else:
-        return pattern
+        prefix = pattern
+
+    return prefix
 
 
 class Mtime:
