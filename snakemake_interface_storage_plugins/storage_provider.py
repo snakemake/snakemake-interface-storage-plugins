@@ -10,7 +10,7 @@ from fractions import Fraction
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Iterable, Optional
+from typing import Any, Optional
 
 from throttler import Throttler
 from snakemake_interface_common.exceptions import WorkflowError
@@ -165,11 +165,3 @@ class StorageProviderBase(ABC):
             storage_object = StaticStorageObjectProxy(storage_object)
 
         return storage_object
-
-    @abstractmethod
-    def list_objects(self, query: str) -> Iterable[str]:
-        """Return an iterator over all objects in the storage that match the query.
-
-        This is optional and can raise a NotImplementedError() instead.
-        """
-        ...
