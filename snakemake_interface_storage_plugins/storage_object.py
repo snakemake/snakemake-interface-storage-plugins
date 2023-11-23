@@ -165,8 +165,8 @@ class StorageObjectRead(StorageObjectBase):
             raise WorkflowError(f"Failed to check existence of {self.query}", e)
 
     async def managed_retrieve(self):
-        self.local_path().parent.mkdir(parents=True, exist_ok=True)
         try:
+            self.local_path().parent.mkdir(parents=True, exist_ok=True)
             async with self._rate_limiter(Operation.RETRIEVE):
                 return self.retrieve_object()
         except Exception as e:
