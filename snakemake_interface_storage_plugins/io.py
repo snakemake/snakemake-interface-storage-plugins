@@ -38,7 +38,7 @@ def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False):
         prefix = pattern[: first_wildcard.start()]
         if strip_incomplete_parts:
             if "/" in prefix:
-                prefix = prefix.rsplit("/", 1)[0]
+                prefix = prefix.rsplit("/", 1)[0] + "/"
             else:
                 first_slash_idx = pattern.find("/")
                 if first_slash_idx != -1 and first_slash_idx > first_wildcard.start():
