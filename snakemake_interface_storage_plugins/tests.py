@@ -4,6 +4,7 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 from abc import ABC, abstractmethod
+import asyncio
 from pathlib import Path
 from typing import Optional, Type
 
@@ -20,6 +21,8 @@ from snakemake.io import IOCache
 class TestStorageBase(ABC):
     __test__ = False
     retrieve_only = False
+    store_only = False
+    delete = True
 
     @abstractmethod
     def get_storage_provider_cls(self) -> Type[StorageProviderBase]:
@@ -42,6 +45,10 @@ class TestStorageBase(ABC):
         return provider.object(query)
 
     def test_storage(self, tmp_path):
+        assert not (
+            self.store_only and self.retrieve_only
+        ), "store_only and retrieve_only may not be True at the same time"
+
         obj = self._get_obj(tmp_path, self.get_query(tmp_path))
 
         stored = False
@@ -59,10 +66,12 @@ class TestStorageBase(ABC):
             print(obj.mtime())
             print(obj.size())
 
-            obj.retrieve_object()
+            if not self.store_only:
+                obj.local_path().parent.mkdir(parents=True, exist_ok=True)
+                obj.retrieve_object()
 
         finally:
-            if not self.retrieve_only and stored:
+            if not self.retrieve_only and stored and self.delete:
                 obj.remove()
 
     def test_storage_not_existing(self, tmp_path):
@@ -73,7 +82,7 @@ class TestStorageBase(ABC):
     def test_inventory(self, tmp_path):
         obj = self._get_obj(tmp_path, self.get_query(tmp_path))
         cache = IOCache(max_wait_time=10)
-        obj.inventory(cache)
+        asyncio.run(obj.inventory(cache))
 
     def test_query_validation(self, tmp_path):
         provider = self._get_provider(tmp_path)
