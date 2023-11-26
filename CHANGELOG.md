@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.0.1...v2.1.0) (2023-11-23)
+
+
+### Features
+
+* add argument for stripping incomplete parts of constant prefix ([d050377](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/d050377f06cb25654df2c966f0ac0557dd758483))
+
+
+### Bug Fixes
+
+* raise WorkflowError in case of failture during dir creation ([ed38962](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/ed3896267af3b2684184468e87625823d3d10f35))
+* remove superfluous method ([30aeb9e](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/30aeb9ea4c258dd16341daa867f6253b40cfbda3))
+
 ## [2.0.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.0.0...v2.0.1) (2023-11-15)
 
 
