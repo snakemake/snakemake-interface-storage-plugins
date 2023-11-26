@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.1.0...v2.1.1) (2023-11-26)
+
+
+### Bug Fixes
+
+* fix property name in interface ([89b48d5](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/89b48d57ddf54b489f38292c3f41f78bb22b0219))
+
 ## [2.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.0.1...v2.1.0) (2023-11-23)
 
 
