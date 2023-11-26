@@ -85,7 +85,7 @@ class IOCacheStorageInterface:
 
     @property
     @abstractmethod
-    def exists_remote(self) -> Dict[str, bool]:
+    def exists_in_storage(self) -> Dict[str, bool]:
         ...
 
     @property
