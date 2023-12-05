@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.1.1...v3.0.0) (2023-12-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* require list of example queries (renamed method example_query into example_queries); this way, we support storage providers that need multiple examples to best explain how queries are structured
+
+### Features
+
+* require list of example queries (renamed method example_query into example_queries); this way, we support storage providers that need multiple examples to best explain how queries are structured ([a2c4a70](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/a2c4a701398e6b32bab27b294bf649449f26db6b))
+* support checking whether plugin is read/write. ([df1f4da](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/df1f4da3299a07d889aef161accbee3b5da95921))
+
 ## [2.1.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.1.0...v2.1.1) (2023-11-26)
 
 
