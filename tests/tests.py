@@ -32,7 +32,7 @@ class TestRegistry(TestRegistryBase):
     def validate_plugin(self, plugin: PluginBase):
         assert plugin._storage_settings_cls is not None
         assert plugin.storage_provider is not None
-        assert not plugin.supports_default_storage()
+        assert not plugin.is_read_write()
 
     def validate_settings(self, settings: SettingsBase, plugin: PluginBase):
         assert isinstance(settings, plugin._storage_settings_cls)

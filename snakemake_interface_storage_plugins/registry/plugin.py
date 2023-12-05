@@ -41,7 +41,7 @@ class Plugin(PluginBase):
     def settings_cls(self):
         return self._storage_settings_cls
 
-    def supports_default_storage(self):
+    def is_read_write(self):
         return issubclass(self.storage_object, StorageObjectWrite) and issubclass(
             self.storage_object, StorageObjectRead
         )
