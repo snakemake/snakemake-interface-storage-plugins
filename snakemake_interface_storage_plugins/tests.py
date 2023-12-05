@@ -95,3 +95,9 @@ class TestStorageBase(ABC):
             local_prefix=Path(tmp_path) / "local_prefix",
             settings=self.get_storage_provider_settings(),
         )
+
+    def test_example_queries(self, tmp_path):
+        provider = self._get_provider(tmp_path)
+        queries = provider.example_queries()
+        assert isinstance(queries, list)
+        assert len(queries) > 0

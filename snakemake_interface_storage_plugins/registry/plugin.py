@@ -12,10 +12,16 @@ from snakemake_interface_storage_plugins import common
 
 from snakemake_interface_common.plugin_registry.plugin import PluginBase
 
+from snakemake_interface_storage_plugins.storage_object import (
+    StorageObjectRead,
+    StorageObjectWrite,
+)
+
 
 @dataclass
 class Plugin(PluginBase):
     storage_provider: object
+    storage_object: object
     _storage_settings_cls: Optional[Type[StorageProviderSettingsBase]]
     _name: str
 
@@ -34,3 +40,8 @@ class Plugin(PluginBase):
     @property
     def settings_cls(self):
         return self._storage_settings_cls
+
+    def supports_default_storage(self):
+        return issubclass(self.storage_object, StorageObjectWrite) and issubclass(
+            self.storage_object, StorageObjectRead
+        )

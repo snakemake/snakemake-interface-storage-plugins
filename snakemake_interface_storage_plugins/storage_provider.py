@@ -6,11 +6,12 @@ __license__ = "MIT"
 
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from enum import Enum
 from fractions import Fraction
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 from throttler import Throttler
 from snakemake_interface_common.exceptions import WorkflowError
@@ -34,10 +35,17 @@ class StorageQueryValidationResult:
         return self.valid
 
 
+class QueryType(Enum):
+    INPUT = 0
+    OUTPUT = 1
+    ANY = 2
+
+
 @dataclass
 class ExampleQuery:
     query: str
     description: str
+    type: QueryType
 
 
 class StorageProviderBase(ABC):
@@ -45,8 +53,6 @@ class StorageProviderBase(ABC):
     These might be used to hold common credentials,
     and are then passed to StorageObjects.
     """
-
-    supports_default = False
 
     def __init__(
         self,
@@ -93,8 +99,8 @@ class StorageProviderBase(ABC):
 
     @classmethod
     @abstractmethod
-    def example_query(cls) -> ExampleQuery:
-        """Return an example query with description for this storage provider."""
+    def example_queries(cls) -> List[ExampleQuery]:
+        """Return a example queries with description for this storage provider."""
         ...
 
     @abstractmethod

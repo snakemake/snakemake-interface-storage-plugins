@@ -39,6 +39,7 @@ class StoragePluginRegistry(PluginRegistryBase):
         return Plugin(
             _name=name,
             storage_provider=module.StorageProvider,
+            storage_object=module.StorageObject,
             _storage_settings_cls=getattr(module, "StorageProviderSettings", None),
         )
 

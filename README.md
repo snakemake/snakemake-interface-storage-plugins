@@ -7,7 +7,7 @@ It is recommended to use Snakemake's poetry plugin to set up this skeleton (and 
 
 ```python
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional, List
 from snakemake_interface_storage_plugins.settings import StorageProviderSettingsBase
 from snakemake_interface_storage_plugins.storage_provider import (
     StorageProviderBase,
@@ -78,8 +78,8 @@ class StorageProvider(StorageProviderBase):
         pass
 
     @classmethod
-    def example_query(cls) -> ExampleQuery:
-        """Return an example query with description for this storage provider."""
+    def example_queries(cls) -> List[ExampleQuery]:
+        """Return valid example queries (at least one) with description."""
         ...
 
     def rate_limiter_key(self, query: str, operation: Operation) -> Any:
