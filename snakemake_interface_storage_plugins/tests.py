@@ -63,8 +63,8 @@ class TestStorageBase(ABC):
                 obj.local_path().unlink()
 
             assert obj.exists()
-            print(obj.mtime())
-            print(obj.size())
+
+            self._test_inventory(obj)
 
             if not self.store_only:
                 obj.local_path().parent.mkdir(parents=True, exist_ok=True)
@@ -79,9 +79,13 @@ class TestStorageBase(ABC):
 
         assert not obj.exists()
 
-    def test_inventory(self, tmp_path):
-        obj = self._get_obj(tmp_path, self.get_query(tmp_path))
+    def _test_inventory(self, obj):
         cache = IOCache(max_wait_time=10)
+        # create inventory entry if implemented in StorageObject
+        asyncio.run(obj.inventory(cache))
+        # Check whether second run of inventory passes (should not perform any action
+        # though)
+        # TODO: Mock the cache to make sure that no second storing happens
         asyncio.run(obj.inventory(cache))
 
     def test_query_validation(self, tmp_path):
