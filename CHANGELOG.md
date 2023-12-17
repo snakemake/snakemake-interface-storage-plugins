@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.0.0...v3.0.1) (2023-12-17)
+
+
+### Bug Fixes
+
+* improved inventory test ([a07d750](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/a07d75014174df0951526eb7645858dddd6dac5b))
+
 ## [3.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.1.1...v3.0.0) (2023-12-05)
 
 
