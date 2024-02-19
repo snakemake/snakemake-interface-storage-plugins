@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.0.0...v3.1.0) (2024-02-19)
+
+
+### Features
+
+* support for touching storage objects (updating their modification time) ([#35](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/35)) ([a7db28b](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/a7db28bb01ab6019fd2819103481fd2b635b21a7))
+
+
+### Bug Fixes
+
+* improved inventory test ([a07d750](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/a07d75014174df0951526eb7645858dddd6dac5b))
+
 ## [3.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v2.1.1...v3.0.0) (2023-12-05)
 
 
