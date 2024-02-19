@@ -23,6 +23,7 @@ class TestStorageBase(ABC):
     retrieve_only = False
     store_only = False
     delete = True
+    touch = False
 
     @abstractmethod
     def get_storage_provider_cls(self) -> Type[StorageProviderBase]:
@@ -65,6 +66,9 @@ class TestStorageBase(ABC):
             assert obj.exists()
 
             self._test_inventory(obj)
+
+            if self.touch:
+                obj.touch()
 
             if not self.store_only:
                 obj.local_path().parent.mkdir(parents=True, exist_ok=True)
