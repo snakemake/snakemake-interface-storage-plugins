@@ -213,3 +213,17 @@ class StorageObjectGlob(StorageObjectBase):
         # This is used by glob_wildcards() to find matches for wildcards in the query.
         # The method has to return concretized queries without any remaining wildcards.
         ...
+
+
+class StorageObjectTouch(StorageObjectBase):
+    @abstractmethod
+    def touch(self):
+        """Touch the object."""
+        ...
+
+    async def managed_touch(self):
+        try:
+            async with self._rate_limiter(Operation.TOUCH):
+                self.touch()
+        except Exception as e:
+            raise WorkflowError(f"Failed to touch storage object {self.query}", e)

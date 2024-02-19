@@ -19,6 +19,7 @@ from snakemake_interface_storage_plugins.storage_object import (
     StorageObjectRead,
     StorageObjectWrite,
     StorageObjectGlob,
+    StorageObjectTouch,
     retry_decorator,
 )
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
@@ -114,7 +115,12 @@ class StorageProvider(StorageProviderBase):
 # storage (e.g. because it is read-only see
 # snakemake-storage-http for comparison), remove the corresponding base classes
 # from the list of inherited items.
-class StorageObject(StorageObjectRead, StorageObjectWrite, StorageObjectGlob):
+class StorageObject(
+    StorageObjectRead,
+    StorageObjectWrite,
+    StorageObjectGlob,
+    StorageObjectTouch
+):
     # For compatibility with future changes, you should not overwrite the __init__
     # method. Instead, use __post_init__ to set additional attributes and initialize
     # futher stuff.
@@ -190,7 +196,7 @@ class StorageObject(StorageObjectRead, StorageObjectWrite, StorageObjectGlob):
         # Remove the object from the storage.
         ...
 
-    # The following to methods are only required if the class inherits from
+    # The following to method is only required if the class inherits from
     # StorageObjectGlob.
 
     @retry_decorator
@@ -200,5 +206,12 @@ class StorageObject(StorageObjectRead, StorageObjectWrite, StorageObjectGlob):
         # The method has to return concretized queries without any remaining wildcards.
         # Use snakemake_executor_plugins.io.get_constant_prefix(self.query) to get the
         # prefix of the query before the first wildcard.
+        ...
+
+    # The following method is only required if the class inherits from
+    # StorageObjectTouch
+    @retry_decorator
+    def touch(self):
+        """Touch the object, updating its modification date."""
         ...
 ```
