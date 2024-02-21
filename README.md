@@ -182,7 +182,7 @@ class StorageObject(
         # Ensure that the object is accessible locally under self.local_path()
         ...
 
-    # The following to methods are only required if the class inherits from
+    # The following two methods are only required if the class inherits from
     # StorageObjectReadWrite.
 
     @retry_decorator
@@ -196,7 +196,7 @@ class StorageObject(
         # Remove the object from the storage.
         ...
 
-    # The following to method is only required if the class inherits from
+    # The following method is only required if the class inherits from
     # StorageObjectGlob.
 
     @retry_decorator
