@@ -65,6 +65,8 @@ class TestStorageBase(ABC):
 
             assert obj.exists()
 
+            assert isinstance(obj.mtime(), float)
+
             self._test_inventory(obj)
 
             if self.touch:
