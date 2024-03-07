@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.1.0...v3.1.1) (2024-03-07)
+
+
+### Bug Fixes
+
+* test mtime in test suite ([#38](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/38)) ([5cdd759](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/5cdd759c8268c38326c67fef3d477fa113fa4351))
+
 ## [3.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.0.0...v3.1.0) (2024-02-19)
 
 
