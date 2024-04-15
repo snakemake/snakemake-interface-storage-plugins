@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.1.1...v3.2.0) (2024-04-15)
+
+
+### Features
+
+* add test case for directories ([#42](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/42)) ([e6c4294](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/e6c42946b7f00a74c567219c875fa14e6ebe22a7))
+
 ## [3.1.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.1.0...v3.1.1) (2024-03-07)
 
 
