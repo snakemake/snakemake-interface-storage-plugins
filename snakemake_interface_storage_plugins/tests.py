@@ -6,6 +6,7 @@ __license__ = "MIT"
 from abc import ABC, abstractmethod
 import asyncio
 from pathlib import Path
+import sys
 from typing import Optional, Type
 
 from snakemake_interface_storage_plugins.storage_provider import (
@@ -24,6 +25,7 @@ class TestStorageBase(ABC):
     store_only = False
     delete = True
     touch = False
+    files_only = True
 
     @abstractmethod
     def get_storage_provider_cls(self) -> Type[StorageProviderBase]:
@@ -46,6 +48,16 @@ class TestStorageBase(ABC):
         return provider.object(query)
 
     def test_storage(self, tmp_path):
+        self._test_storage(tmp_path, directory=False)
+        if not self.files_only:
+            self._test_storage(tmp_path, directory=True)
+
+    def _test_storage(self, tmp_path, directory=False):
+        print(
+            f"Testing storage of {'files' if not directory else 'directories'}.",
+            file=sys.stderr,
+        )
+
         assert not (
             self.store_only and self.retrieve_only
         ), "store_only and retrieve_only may not be True at the same time"
@@ -55,8 +67,14 @@ class TestStorageBase(ABC):
         stored = False
         try:
             if not self.retrieve_only:
-                obj.local_path().parent.mkdir(parents=True, exist_ok=True)
-                with open(obj.local_path(), "w") as f:
+                if directory:
+                    dirpath = obj.local_path()
+                    filepath = dirpath / "test.txt"
+                else:
+                    dirpath = obj.local_path().parent
+                    filepath = obj.local_path()
+                dirpath.mkdir(parents=True, exist_ok=True)
+                with open(filepath, "w") as f:
                     f.write("test")
                     f.flush()
                 obj.store_object()
