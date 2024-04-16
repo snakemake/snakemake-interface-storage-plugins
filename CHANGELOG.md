@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.0...v3.2.1) (2024-04-16)
+
+
+### Bug Fixes
+
+* rm local dir before storage test ([170a135](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/170a1359302ca8ff62a227e697e7be5b7710741a))
+
 ## [3.2.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.1.1...v3.2.0) (2024-04-15)
 
 
