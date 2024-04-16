@@ -75,6 +75,7 @@ class TestStorageBase(ABC):
                     dirpath = obj.local_path().parent
                     filepath = obj.local_path()
                 shutil.rmtree(dirpath, ignore_errors=True)
+                print(dirpath.exists())
                 dirpath.mkdir(parents=True, exist_ok=True)
                 with open(filepath, "w") as f:
                     f.write("test")
