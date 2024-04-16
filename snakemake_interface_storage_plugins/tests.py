@@ -75,10 +75,10 @@ class TestStorageBase(ABC):
                     dirpath = obj.local_path().parent
                     filepath = obj.local_path()
                 if dirpath.exists():
-                    if dirpath.is_file():
-                        dirpath.unlink()
-                    else:
+                    if dirpath.is_dir():
                         shutil.rmtree(dirpath)
+                    else:
+                        dirpath.unlink()
                 dirpath.mkdir(parents=True, exist_ok=True)
                 with open(filepath, "w") as f:
                     f.write("test")
