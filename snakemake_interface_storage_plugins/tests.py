@@ -6,6 +6,7 @@ __license__ = "MIT"
 from abc import ABC, abstractmethod
 import asyncio
 from pathlib import Path
+import shutil
 import sys
 from typing import Optional, Type
 
@@ -73,6 +74,7 @@ class TestStorageBase(ABC):
                 else:
                     dirpath = obj.local_path().parent
                     filepath = obj.local_path()
+                shutil.rmtree(dirpath, ignore_errors=True)
                 dirpath.mkdir(parents=True, exist_ok=True)
                 with open(filepath, "w") as f:
                     f.write("test")
