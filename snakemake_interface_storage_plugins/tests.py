@@ -85,7 +85,10 @@ class TestStorageBase(ABC):
                     f.flush()
                 obj.store_object()
                 stored = True
-                obj.local_path().unlink()
+                if directory:
+                    shutil.rmtree(dirpath)
+                else:
+                    filepath.unlink()
 
             assert obj.exists()
 
