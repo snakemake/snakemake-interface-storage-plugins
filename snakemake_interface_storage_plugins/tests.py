@@ -100,7 +100,7 @@ class TestStorageBase(ABC):
                 obj.touch()
 
             if not self.store_only:
-                obj.local_path().parent.mkdir(parents=True, exist_ok=True)
+                dirpath.mkdir(parents=True, exist_ok=True)
                 obj.retrieve_object()
 
         finally:
