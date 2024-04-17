@@ -66,14 +66,16 @@ class TestStorageBase(ABC):
         obj = self._get_obj(tmp_path, self.get_query(tmp_path))
 
         stored = False
+
+        if directory:
+            dirpath = obj.local_path()
+            filepath = dirpath / "test.txt"
+        else:
+            dirpath = obj.local_path().parent
+            filepath = obj.local_path()
+
         try:
             if not self.retrieve_only:
-                if directory:
-                    dirpath = obj.local_path()
-                    filepath = dirpath / "test.txt"
-                else:
-                    dirpath = obj.local_path().parent
-                    filepath = obj.local_path()
                 if dirpath.exists():
                     if dirpath.is_dir():
                         shutil.rmtree(dirpath)
