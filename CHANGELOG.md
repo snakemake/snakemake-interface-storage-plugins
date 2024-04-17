@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.1...v3.2.2) (2024-04-17)
+
+
+### Bug Fixes
+
+* improved storage tests ([#45](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/45)) ([74e07a0](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/74e07a029a9434c152dcb782b15185e15e97671c))
+
 ## [3.2.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.0...v3.2.1) (2024-04-16)
 
 
