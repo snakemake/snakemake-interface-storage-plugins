@@ -66,22 +66,31 @@ class TestStorageBase(ABC):
         obj = self._get_obj(tmp_path, self.get_query(tmp_path))
 
         stored = False
+
+        if directory:
+            dirpath = obj.local_path()
+            filepath = dirpath / "test.txt"
+        else:
+            dirpath = obj.local_path().parent
+            filepath = obj.local_path()
+
         try:
             if not self.retrieve_only:
-                if directory:
-                    dirpath = obj.local_path()
-                    filepath = dirpath / "test.txt"
-                else:
-                    dirpath = obj.local_path().parent
-                    filepath = obj.local_path()
-                shutil.rmtree(dirpath, ignore_errors=True)
+                if dirpath.exists():
+                    if dirpath.is_dir():
+                        shutil.rmtree(dirpath)
+                    else:
+                        dirpath.unlink()
                 dirpath.mkdir(parents=True, exist_ok=True)
                 with open(filepath, "w") as f:
                     f.write("test")
                     f.flush()
                 obj.store_object()
                 stored = True
-                obj.local_path().unlink()
+                if directory:
+                    shutil.rmtree(dirpath)
+                else:
+                    filepath.unlink()
 
             assert obj.exists()
 
@@ -93,7 +102,7 @@ class TestStorageBase(ABC):
                 obj.touch()
 
             if not self.store_only:
-                obj.local_path().parent.mkdir(parents=True, exist_ok=True)
+                dirpath.mkdir(parents=True, exist_ok=True)
                 obj.retrieve_object()
 
         finally:
