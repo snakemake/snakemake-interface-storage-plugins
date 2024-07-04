@@ -29,19 +29,16 @@ class TestStorageBase(ABC):
     files_only = True
 
     @abstractmethod
-    def get_storage_provider_cls(self) -> Type[StorageProviderBase]:
-        ...
+    def get_storage_provider_cls(self) -> Type[StorageProviderBase]: ...
 
     def get_storage_provider_settings(self) -> Optional[StorageProviderSettingsBase]:
         return None
 
     @abstractmethod
-    def get_query(self, tmp_path) -> str:
-        ...
+    def get_query(self, tmp_path) -> str: ...
 
     @abstractmethod
-    def get_query_not_existing(self, tmp_path) -> str:
-        ...
+    def get_query_not_existing(self, tmp_path) -> str: ...
 
     def _get_obj(self, tmp_path, query):
         provider = self._get_provider(tmp_path)
