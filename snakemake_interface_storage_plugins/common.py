@@ -18,4 +18,4 @@ class Operation(Enum):
     MTIME = "mtime"
     REMOVE = "remove"
     SIZE = "size"
-    OPERATION = "touch"
+    TOUCH = "touch"

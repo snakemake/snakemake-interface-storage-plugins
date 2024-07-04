@@ -74,7 +74,7 @@ class StorageObjectBase(ABC):
     def __post_init__(self):  # noqa B027
         pass
 
-    def set_local_path(self, path: Path):
+    def set_local_path(self, path: Path) -> None:
         """Set a custom local path for this storage object."""
         self._overwrite_local_path = path
 
@@ -97,7 +97,7 @@ class StorageObjectBase(ABC):
         return str(self.provider.local_prefix / (local_suffix or self.local_suffix()))
 
     @abstractmethod
-    def local_suffix(self):
+    def local_suffix(self) -> str:
         """Return a unique suffix for the local path of the object."""
         # This can be a hexdigest of the query, or ideally a meaningful name.
         # For example, if the query is a URL, it can be the URL without the protocol

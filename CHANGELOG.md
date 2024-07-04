@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.3](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.2...v3.2.3) (2024-07-04)
+
+
+### Bug Fixes
+
+* fix name of touch operation attribute ([a0556bc](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/a0556bc06f690d0fe97b5681f243b383b1a782c3))
+* return type of local_suffix ([#48](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/48)) ([31ef31d](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/31ef31df6d43398d1e065fe24a17f2d162e06059))
+
 ## [3.2.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.1...v3.2.2) (2024-04-17)
 
 
