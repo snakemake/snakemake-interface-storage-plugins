@@ -74,7 +74,7 @@ class StorageObjectBase(ABC):
     def __post_init__(self):  # noqa B027
         pass
 
-    def set_local_path(self, path: Path):
+    def set_local_path(self, path: Path) -> None:
         """Set a custom local path for this storage object."""
         self._overwrite_local_path = path
 
@@ -97,7 +97,7 @@ class StorageObjectBase(ABC):
         return str(self.provider.local_prefix / (local_suffix or self.local_suffix()))
 
     @abstractmethod
-    def local_suffix(self):
+    def local_suffix(self) -> str:
         """Return a unique suffix for the local path of the object."""
         # This can be a hexdigest of the query, or ideally a meaningful name.
         # For example, if the query is a URL, it can be the URL without the protocol
@@ -119,8 +119,7 @@ class StorageObjectRead(StorageObjectBase):
         ...
 
     @abstractmethod
-    def get_inventory_parent(self) -> Optional[str]:
-        ...
+    def get_inventory_parent(self) -> Optional[str]: ...
 
     @abstractmethod
     def cleanup(self):
@@ -128,20 +127,16 @@ class StorageObjectRead(StorageObjectBase):
         ...
 
     @abstractmethod
-    def exists(self) -> bool:
-        ...
+    def exists(self) -> bool: ...
 
     @abstractmethod
-    def mtime(self) -> float:
-        ...
+    def mtime(self) -> float: ...
 
     @abstractmethod
-    def size(self) -> int:
-        ...
+    def size(self) -> int: ...
 
     @abstractmethod
-    def retrieve_object(self):
-        ...
+    def retrieve_object(self): ...
 
     async def managed_size(self) -> int:
         try:
@@ -184,12 +179,10 @@ class StorageObjectRead(StorageObjectBase):
 
 class StorageObjectWrite(StorageObjectBase):
     @abstractmethod
-    def store_object(self):
-        ...
+    def store_object(self): ...
 
     @abstractmethod
-    def remove(self):
-        ...
+    def remove(self): ...
 
     async def managed_remove(self):
         try:
