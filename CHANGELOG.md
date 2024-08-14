@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.4](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.3...v3.2.4) (2024-08-14)
+
+
+### Bug Fixes
+
+* in test suite, check that filepath exists after retrieval ([b4585df](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/b4585df9fb9b2890c5c77d41e604170bca0caee2))
+
 ## [3.2.3](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.2...v3.2.3) (2024-07-04)
 
 
