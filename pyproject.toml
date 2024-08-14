@@ -20,7 +20,7 @@ flake8 = "^6.1.0"
 flake8-bugbear = "^23.3.12"
 pytest = "^7.0"
 snakemake-storage-plugin-http = {git="https://github.com/snakemake/snakemake-storage-plugin-http.git"}
-snakemake = {git="https://github.com/snakemake/snakemake.git"}
+snakemake = "^8.18.0"
 
 [build-system]
 requires = ["poetry-core"]
