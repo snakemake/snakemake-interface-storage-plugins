@@ -101,6 +101,7 @@ class TestStorageBase(ABC):
             if not self.store_only:
                 dirpath.mkdir(parents=True, exist_ok=True)
                 obj.retrieve_object()
+                assert filepath.exists()
 
         finally:
             if not self.retrieve_only and stored and self.delete:
