@@ -133,6 +133,14 @@ class StorageProviderBase(ABC):
         """
         ...
 
+    def postprocess_query(self, query: str) -> str:
+        """Postprocess the query to make it suitable and as informative as possible.
+
+        This can e.g. be modified in a subclass to add a protocol or global settings,
+        or normalize the scheme if multiple ones are possible.
+        """
+        return query
+
     @property
     def is_read_write(self) -> bool:
         from snakemake_interface_storage_plugins.storage_object import (
@@ -156,6 +164,8 @@ class StorageProviderBase(ABC):
         from snakemake_interface_storage_plugins.storage_object import (
             StaticStorageObjectProxy,
         )
+
+        query = self.postprocess_query(query)
 
         if keep_local is None:
             keep_local = self.keep_local

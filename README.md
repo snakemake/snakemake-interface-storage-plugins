@@ -110,6 +110,12 @@ class StorageProvider(StorageProviderBase):
         # object is actually used.
         ...
 
+    # If required, overwrite the method postprocess_query from StorageProviderBase
+    # in order to e.g. normalize the query or add information from the settings to it.
+    # Otherwise, remove this method as it will be inherited from the base class.
+    def postprocess_query(self, query: str) -> str:
+        return query
+
 
 # Required:
 # Implementation of storage object. If certain methods cannot be supported by your
