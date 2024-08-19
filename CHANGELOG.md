@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.4...v3.3.0) (2024-08-19)
+
+
+### Features
+
+* add postprocess_query method for optionally modifying the query before a storage object is created ([#51](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/51)) ([5590a90](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/5590a902d70aa5881212321ac1136c6c05cff51e))
+
 ## [3.2.4](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.3...v3.2.4) (2024-08-14)
 
 
