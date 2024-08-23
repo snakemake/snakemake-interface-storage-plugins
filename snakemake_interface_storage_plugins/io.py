@@ -62,9 +62,7 @@ class Mtime:
     def local_or_storage(self, follow_symlinks=False):
         if self._storage is not None:
             return self._storage
-        if follow_symlinks and self._local_target is not None:
-            return self._local_target
-        return self._local
+        return self.local(follow_symlinks=follow_symlinks)
 
     def storage(
         self,
