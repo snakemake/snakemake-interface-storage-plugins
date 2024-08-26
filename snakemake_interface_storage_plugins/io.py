@@ -13,7 +13,7 @@ WILDCARD_REGEX = re.compile(
     \{
         (?=(   # This lookahead assertion emulates an 'atomic group'
                # which is required for performance
-            \s*(?P<name>(wildcards\.\w+|\w+))   # wildcard name
+            \s*(?P<name>[.\w]+)   # wildcard name
             (\s*,\s*
                 (?P<constraint>                 # an optional constraint
                     ([^{}]+ | \{\d+(,\d+)?\})*  # allow curly braces to nest one level
