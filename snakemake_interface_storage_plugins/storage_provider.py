@@ -141,6 +141,14 @@ class StorageProviderBase(ABC):
         """
         return query
 
+    def safe_print(self, query: str) -> str:
+        """Process the query to remove potentially sensitive information when printing.
+
+        Useful if the query is URL-like and can contain authentication tokens in the
+        parameters and/or usernames/passwords.
+        """
+        return query
+
     @property
     def is_read_write(self) -> bool:
         from snakemake_interface_storage_plugins.storage_object import (
