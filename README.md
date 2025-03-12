@@ -116,6 +116,13 @@ class StorageProvider(StorageProviderBase):
     def postprocess_query(self, query: str) -> str:
         return query
 
+    # This can be used to change how the rendered query is displayed in the logs to
+    # prevent accidentally printing sensitive information e.g. tokens in a URL.
+    def safe_print(self, query: str) -> str:
+        """Process the query to remove potentially sensitive information when printing.
+        """
+        return query
+
 
 # Required:
 # Implementation of storage object. If certain methods cannot be supported by your

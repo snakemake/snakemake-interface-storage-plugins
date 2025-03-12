@@ -68,6 +68,7 @@ class StorageObjectBase(ABC):
         self.keep_local = keep_local
         self.retrieve = retrieve
         self.provider = provider
+        self.print_query = self.provider.safe_print(self.query)
         self._overwrite_local_path = None
         self.__post_init__()
 
@@ -143,21 +144,23 @@ class StorageObjectRead(StorageObjectBase):
             async with self._rate_limiter(Operation.SIZE):
                 return self.size()
         except Exception as e:
-            raise WorkflowError(f"Failed to get size of {self.query}", e)
+            raise WorkflowError(f"Failed to get size of {self.print_query}") from e
 
     async def managed_mtime(self) -> float:
         try:
             async with self._rate_limiter(Operation.MTIME):
                 return self.mtime()
         except Exception as e:
-            raise WorkflowError(f"Failed to get mtime of {self.query}", e)
+            raise WorkflowError(f"Failed to get mtime of {self.print_query}") from e
 
     async def managed_exists(self) -> bool:
         try:
             async with self._rate_limiter(Operation.EXISTS):
                 return self.exists()
         except Exception as e:
-            raise WorkflowError(f"Failed to check existence of {self.query}", e)
+            raise WorkflowError(
+                f"Failed to check existence of {self.print_query}"
+            ) from e
 
     async def managed_retrieve(self):
         try:
@@ -173,8 +176,8 @@ class StorageObjectRead(StorageObjectBase):
                 else:
                     os.remove(local_path)
             raise WorkflowError(
-                f"Failed to retrieve storage object from {self.query}", e
-            )
+                f"Failed to retrieve storage object from {self.print_query}"
+            ) from e
 
 
 class StorageObjectWrite(StorageObjectBase):
@@ -189,14 +192,18 @@ class StorageObjectWrite(StorageObjectBase):
             async with self._rate_limiter(Operation.REMOVE):
                 self.remove()
         except Exception as e:
-            raise WorkflowError(f"Failed to remove storage object {self.query}", e)
+            raise WorkflowError(
+                f"Failed to remove storage object {self.print_query}", e
+            )
 
     async def managed_store(self):
         try:
             async with self._rate_limiter(Operation.STORE):
                 self.store_object()
         except Exception as e:
-            raise WorkflowError(f"Failed to store output in storage {self.query}", e)
+            raise WorkflowError(
+                f"Failed to store output in storage {self.print_query}", e
+            )
 
 
 class StorageObjectGlob(StorageObjectBase):
@@ -219,4 +226,6 @@ class StorageObjectTouch(StorageObjectBase):
             async with self._rate_limiter(Operation.TOUCH):
                 self.touch()
         except Exception as e:
-            raise WorkflowError(f"Failed to touch storage object {self.query}", e)
+            raise WorkflowError(
+                f"Failed to touch storage object {self.print_query}"
+            ) from e
