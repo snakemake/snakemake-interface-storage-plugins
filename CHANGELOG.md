@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.4.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.3.0...v3.4.0) (2025-03-12)
+
+
+### Features
+
+* Add option to modify how a query is printed ([#54](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/54)) ([0634a9e](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/0634a9e13e6d38cd2036b165bf94dfe7eaa7fa2f))
+
+
+### Bug Fixes
+
+* update wildcard regex to match {wildcard.name} ([#40](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/40)) ([19a5f80](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/19a5f80ef659b02767b2d499ec8e434c9648972c))
+
 ## [3.3.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.2.4...v3.3.0) (2024-08-19)
 
 
