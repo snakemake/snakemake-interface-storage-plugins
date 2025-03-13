@@ -59,6 +59,7 @@ class StorageProviderBase(ABC):
         local_prefix: Path,
         settings: Optional[StorageProviderSettingsBase] = None,
         keep_local=False,
+        retrieve=True,
         is_default=False,
     ):
         try:
@@ -70,6 +71,7 @@ class StorageProviderBase(ABC):
         self.local_prefix = local_prefix
         self.settings = settings
         self.keep_local = keep_local
+        self.retrieve = retrieve
         self.is_default = is_default
         self._rate_limiters = dict()
         self.__post_init__()
@@ -166,7 +168,7 @@ class StorageProviderBase(ABC):
         self,
         query: str,
         keep_local: Optional[bool] = None,
-        retrieve: bool = True,
+        retrieve: Optional[bool] = None,
         static: bool = False,
     ):
         from snakemake_interface_storage_plugins.storage_object import (
@@ -177,6 +179,9 @@ class StorageProviderBase(ABC):
 
         if keep_local is None:
             keep_local = self.keep_local
+
+        if retrieve is None:
+            retrieve = self.retrieve
 
         storage_object = self.get_storage_object_cls()(
             query=query,
