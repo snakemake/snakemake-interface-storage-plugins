@@ -49,7 +49,7 @@ snakemake-storage-plugin-http = { git = "https://github.com/snakemake/snakemake-
 snakemake = { git = "https://github.com/snakemake/snakemake.git" }
 
 [tool.pixi.feature.dev.tasks]
-format = "ruff format src"
+format = "ruff format snakemake_interface_storage_plugins"
 lint = "ruff check"
-type-check = "mypy src/"
+type-check = "mypy snakemake_interface_storage_plugins/"
 qc = { depends-on = ["format", "lint", "type-check"] }
