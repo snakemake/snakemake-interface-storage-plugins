@@ -5,13 +5,13 @@ __license__ = "MIT"
 
 
 from contextlib import asynccontextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from fractions import Fraction
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from throttler import Throttler
 from snakemake_interface_common.exceptions import WorkflowError
@@ -48,35 +48,33 @@ class ExampleQuery:
     type: QueryType
 
 
+@dataclass
 class StorageProviderBase(ABC):
     """This is an abstract class to be used to derive remote provider classes.
     These might be used to hold common credentials,
     and are then passed to StorageObjects.
     """
 
-    def __init__(
-        self,
-        local_prefix: Path,
-        settings: Optional[StorageProviderSettingsBase] = None,
-        keep_local=False,
-        retrieve=True,
-        is_default=False,
-    ):
+    # Class attributes with type hints
+    local_prefix: Path
+    settings: Optional[StorageProviderSettingsBase] = None
+    keep_local: bool = False
+    retrieve: bool = True
+    is_default: bool = False
+    _rate_limiters: Dict[Any, Throttler] = field(default_factory=dict, init=False)
+
+    def __post_init__(self):
         try:
-            local_prefix.mkdir(parents=True, exist_ok=True)
+            self.local_prefix.mkdir(parents=True, exist_ok=True)
         except OSError as e:
             raise WorkflowError(
-                f"Failed to create local storage prefix {local_prefix}", e
+                f"Failed to create local storage prefix {self.local_prefix}", e
             )
-        self.local_prefix = local_prefix
-        self.settings = settings
-        self.keep_local = keep_local
-        self.retrieve = retrieve
-        self.is_default = is_default
-        self._rate_limiters = dict()
+        # Call any custom initialization that subclasses might provide
         self.__post_init__()
 
     def __post_init__(self):  # noqa B027
+        """Hook for subclasses to perform additional initialization."""
         pass
 
     def rate_limiter(self, query: str, operation: Operation):
