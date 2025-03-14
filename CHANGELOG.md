@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.4.0...v3.5.0) (2025-03-14)
+
+
+### Features
+
+* Allow default configuration of retrieve behaviour ([#60](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/60)) ([a30f957](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/a30f957d34d093030e865c0a9a670c674cefa71c))
+
 ## [3.4.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.3.0...v3.4.0) (2025-03-12)
 
 
