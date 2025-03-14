@@ -53,3 +53,12 @@ format = "ruff format snakemake_interface_storage_plugins"
 lint = "ruff check"
 type-check = "mypy snakemake_interface_storage_plugins/"
 qc = { depends-on = ["format", "lint", "type-check"] }
+
+[tool.pixi.feature.dev.tasks.test]
+cmd = [
+  "pytest",
+  "--cov=snakemake_interface_storage_plugins",
+  "--cov-report=xml:coverage-report/coverage.xml",
+  "--cov-report=term-missing",
+  "tests/tests.py"
+]
