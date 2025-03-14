@@ -48,6 +48,9 @@ snakemake-interface-common = { git = "https://github.com/snakemake/snakemake-int
 snakemake-storage-plugin-http = { git = "https://github.com/snakemake/snakemake-storage-plugin-http.git" }
 snakemake = { git = "https://github.com/snakemake/snakemake.git" }
 
+[tool.mypy]
+ignore_missing_imports = true # Temporary until https://github.com/snakemake/snakemake-interface-common/pull/55
+
 [tool.pixi.feature.dev.tasks]
 format = "ruff format snakemake_interface_storage_plugins"
 lint = "ruff check"
