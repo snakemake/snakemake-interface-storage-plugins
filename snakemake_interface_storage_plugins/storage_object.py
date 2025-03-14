@@ -18,7 +18,10 @@ from snakemake_interface_common.logging import get_logger
 from snakemake_interface_storage_plugins.common import Operation
 
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
-from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
+from snakemake_interface_storage_plugins.storage_provider import (
+    StorageProviderBase,
+    StorageQueryValidationResult,
+)
 
 
 retry_decorator = retry(tries=3, delay=3, backoff=2, logger=get_logger())
@@ -69,7 +72,7 @@ class StorageObjectBase(ABC):
         self.retrieve = retrieve
         self.provider = provider
         self.print_query = self.provider.safe_print(self.query)
-        self._overwrite_local_path = None
+        self._overwrite_local_path: Optional[Path] = None
         self.__post_init__()
 
     def __post_init__(self):  # noqa B027
@@ -81,7 +84,9 @@ class StorageObjectBase(ABC):
 
     def is_valid_query(self) -> bool:
         """Return True is the query is valid for this storage provider."""
-        return self.provider.is_valid_query(self.query)
+        is_valid: StorageQueryValidationResult
+        is_valid = self.provider.is_valid_query(self.query)
+        return is_valid.valid
 
     def local_path(self) -> Path:
         """Return the local path that would represent the query."""

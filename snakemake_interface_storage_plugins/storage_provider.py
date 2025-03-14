@@ -21,6 +21,21 @@ from snakemake_interface_storage_plugins.settings import StorageProviderSettings
 
 @dataclass
 class StorageQueryValidationResult:
+    """Result of validating a storage query string.
+
+    Represents whether a query string is valid for a storage provider
+    and provides a reason if the validation fails.
+
+    Parameters
+    ----------
+    query : str
+        The query string being validated.
+    valid : bool
+        Whether the query is valid for the storage provider.
+    reason : str, optional
+        If invalid, explanation of why validation failed.
+    """
+
     query: str
     valid: bool
     reason: Optional[str] = None
@@ -36,6 +51,20 @@ class StorageQueryValidationResult:
 
 
 class QueryType(Enum):
+    """Enumeration of query types for storage providers.
+
+    Defines the context in which a query will be used within a workflow.
+
+    Attributes
+    ----------
+    INPUT : int
+        Query used for reading/retrieving data from storage.
+    OUTPUT : int
+        Query used for writing/storing data to storage.
+    ANY : int
+        Query usable for both input and output operations.
+    """
+
     INPUT = 0
     OUTPUT = 1
     ANY = 2
@@ -43,6 +72,21 @@ class QueryType(Enum):
 
 @dataclass
 class ExampleQuery:
+    """Example query for a storage provider with description and intended usage.
+
+    Provides documentation and examples for users to understand how to construct
+    valid queries for a specific storage provider.
+
+    Parameters
+    ----------
+    query : str
+        Example query string demonstrating correct format.
+    description : str
+        Human-readable explanation of what the query does.
+    type : QueryType
+        Whether this example is for input, output, or both.
+    """
+
     query: str
     description: str
     type: QueryType
@@ -50,9 +94,25 @@ class ExampleQuery:
 
 @dataclass
 class StorageProviderBase(ABC):
-    """This is an abstract class to be used to derive remote provider classes.
-    These might be used to hold common credentials,
-    and are then passed to StorageObjects.
+    """Abstract base class for Snakemake storage providers.
+
+    Defines the interface for interacting with external storage systems
+    like S3, GCS, HTTP, etc. Storage providers handle authentication,
+    rate limiting, caching, and mapping between remote resources and
+    local files within Snakemake workflows.
+
+    Parameters
+    ----------
+    local_prefix : Path
+        Directory where remote files are cached locally.
+    settings : StorageProviderSettingsBase, optional
+        Provider-specific configuration options.
+    keep_local : bool, default=False
+        Whether to retain local copies after workflow completion.
+    retrieve : bool, default=True
+        Whether to automatically fetch remote files when referenced.
+    is_default : bool, default=False
+        Whether this provider is the default for its protocol.
     """
 
     # Class attributes with type hints
@@ -64,18 +124,18 @@ class StorageProviderBase(ABC):
     _rate_limiters: Dict[Any, Throttler] = field(default_factory=dict, init=False)
 
     def __post_init__(self):
+        """Hook for subclasses to perform additional initialization.
+
+        Subclasses may override this method to perform additional setup
+        after the base class has been initialized and then call the base
+        class implementation using `super().__post_init__()`.
+        """
         try:
             self.local_prefix.mkdir(parents=True, exist_ok=True)
         except OSError as e:
             raise WorkflowError(
                 f"Failed to create local storage prefix {self.local_prefix}", e
             )
-        # Call any custom initialization that subclasses might provide
-        self.__post_init__()
-
-    def __post_init__(self):  # noqa B027
-        """Hook for subclasses to perform additional initialization."""
-        pass
 
     def rate_limiter(self, query: str, operation: Operation):
         if not self.use_rate_limiter():
@@ -84,7 +144,7 @@ class StorageProviderBase(ABC):
             key = self.rate_limiter_key(query, operation)
             if key not in self._rate_limiters:
                 max_status_checks_frac = Fraction(
-                    self.settings.max_requests_per_second
+                    (self.settings.max_requests_per_second if self.settings else None)
                     or self.default_max_requests_per_second()
                 ).limit_denominator()
                 self._rate_limiters[key] = Throttler(
