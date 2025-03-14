@@ -212,10 +212,14 @@ class StorageProviderBase(ABC):
     @property
     def is_read_write(self) -> bool:
         from snakemake_interface_storage_plugins.storage_object import (
-            StorageObjectReadWrite,
+            StorageObjectRead,
+            StorageObjectWrite,
         )
 
-        return isinstance(self.storage_object_cls, StorageObjectReadWrite)
+        cls = self.get_storage_object_cls()
+        return issubclass(cls, StorageObjectRead) and issubclass(
+            cls, StorageObjectWrite
+        )
 
     @classmethod
     def get_storage_object_cls(cls):
