@@ -141,7 +141,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl
       - pypi: git+https://github.com/snakemake/snakemake-interface-common.git#3d63108ce3bc3ce8803ebe88070ae0160fb1baf8
       - pypi: git+https://github.com/snakemake/snakemake-storage-plugin-http.git#41e3eb538848769bf6920014f3480d365ece4d01
-      - pypi: git+https://github.com/snakemake/snakemake.git#8cf4a2fd0d5185050a8f9b9f51ed55b0fd0457c8
+      - pypi: git+https://github.com/snakemake/snakemake.git#ba4d2644aab18b43a8704e883f48c428d8b35d5a
       - pypi: https://files.pythonhosted.org/packages/8c/b5/9bab4d70527abcea6ca2e7b5d212f348c9305205a2f5c20025e08872e99e/snakemake_interface_executor_plugins-9.3.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ae/8c/30a77e85ca205eeac90deeef24360c7ff00b128f1bf161ae2d4df560c266/snakemake_interface_logger_plugins-1.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/35/89/f5f4e48b72fca04458a2fe4f4b02e10f95fb47772b0d0ea889ac929c3b1e/snakemake_interface_report_plugins-1.1.0-py3-none-any.whl
@@ -220,7 +220,7 @@ environments:
       - pypi: https://files.pythonhosted.org/packages/04/be/d09147ad1ec7934636ad912901c5fd7667e1c858e19d355237db0d0cd5e4/smmap-5.0.2-py3-none-any.whl
       - pypi: git+https://github.com/snakemake/snakemake-interface-common.git#3d63108ce3bc3ce8803ebe88070ae0160fb1baf8
       - pypi: git+https://github.com/snakemake/snakemake-storage-plugin-http.git#41e3eb538848769bf6920014f3480d365ece4d01
-      - pypi: git+https://github.com/snakemake/snakemake.git#8cf4a2fd0d5185050a8f9b9f51ed55b0fd0457c8
+      - pypi: git+https://github.com/snakemake/snakemake.git#ba4d2644aab18b43a8704e883f48c428d8b35d5a
       - pypi: https://files.pythonhosted.org/packages/8c/b5/9bab4d70527abcea6ca2e7b5d212f348c9305205a2f5c20025e08872e99e/snakemake_interface_executor_plugins-9.3.3-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/ae/8c/30a77e85ca205eeac90deeef24360c7ff00b128f1bf161ae2d4df560c266/snakemake_interface_logger_plugins-1.1.0-py3-none-any.whl
       - pypi: https://files.pythonhosted.org/packages/35/89/f5f4e48b72fca04458a2fe4f4b02e10f95fb47772b0d0ea889ac929c3b1e/snakemake_interface_report_plugins-1.1.0-py3-none-any.whl
@@ -1322,9 +1322,9 @@ packages:
   version: 5.0.2
   sha256: b30115f0def7d7531d22a0fb6502488d879e75b260a9db4d0819cfb25403af5e
   requires_python: '>=3.7'
-- pypi: git+https://github.com/snakemake/snakemake.git#8cf4a2fd0d5185050a8f9b9f51ed55b0fd0457c8
+- pypi: git+https://github.com/snakemake/snakemake.git#ba4d2644aab18b43a8704e883f48c428d8b35d5a
   name: snakemake
-  version: 8.30.1.dev53
+  version: 8.30.1.dev56
   requires_dist:
   - appdirs
   - immutables
