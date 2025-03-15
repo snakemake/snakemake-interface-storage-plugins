@@ -15,8 +15,7 @@ jobs:
         id: release
         with:
           release-type: python
-          package-name: snakemake-interface-stroage-plugins
-
+          package-name: snakemake-interface-storage-plugins
 
   publish-pypi:
     runs-on: ubuntu-latest
