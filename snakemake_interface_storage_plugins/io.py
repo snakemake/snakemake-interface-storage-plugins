@@ -54,23 +54,31 @@ def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False) -> s
 
 class Mtime:
     __slots__ = ["_local", "_local_target", "_storage"]
+    _local: Optional[float]
+    _local_target: Optional[float]
+    _storage: Optional[float]
 
-    def __init__(self, local=None, local_target=None, storage=None):
+    def __init__(
+        self,
+        local: Optional[float] = None,
+        local_target: Optional[float] = None,
+        storage: Optional[float] = None,
+    ):
         self._local = local
         self._local_target = local_target
         self._storage = storage
 
-    def local_or_storage(self, follow_symlinks=False):
+    def local_or_storage(self, follow_symlinks: bool = False) -> Optional[float]:
         if self._storage is not None:
             return self._storage
         return self.local(follow_symlinks=follow_symlinks)
 
     def storage(
         self,
-    ):
+    ) -> Optional[float]:
         return self._storage
 
-    def local(self, follow_symlinks=False):
+    def local(self, follow_symlinks: bool = False) -> Optional[float]:
         if follow_symlinks and self._local_target is not None:
             return self._local_target
         return self._local
