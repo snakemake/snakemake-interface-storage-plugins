@@ -12,6 +12,10 @@ from snakemake_interface_storage_plugins import common
 
 from snakemake_interface_common.plugin_registry.plugin import PluginBase
 
+from snakemake_interface_storage_plugins.storage_object import (
+    StorageObjectRead,
+    StorageObjectWrite,
+)
 
 @dataclass
 class Plugin(PluginBase):
@@ -36,11 +40,8 @@ class Plugin(PluginBase):
     def settings_cls(self) -> Optional[Type[StorageProviderSettingsBase]]:
         return self._storage_settings_cls
 
-    def is_read_write(self) -> bool:
-        from snakemake_interface_storage_plugins.storage_provider import (
-            StorageProviderBase,
+
+    def is_read_write(self):
+        return issubclass(self.storage_object, StorageObjectWrite) and issubclass(
+            self.storage_object, StorageObjectRead
         )
-
-        assert isinstance(self.storage_provider, StorageProviderBase)
-
-        return self.storage_provider.is_read_write
