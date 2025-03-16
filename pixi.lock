@@ -2208,7 +2208,7 @@ packages:
 - pypi: .
   name: snakemake-interface-storage-plugins
   version: 3.5.0
-  sha256: 520f22f75221dfb9e9b780a7f05e9d6eafa5ea3798b420d16ed41e05710ca27b
+  sha256: 17a212677526fa7d28e39fde31bd5d454d5b6ce23de944b44bd54b4830a819ca
   requires_dist:
   - snakemake-interface-common>=1.12.0
   - wrapt>=1.15.0

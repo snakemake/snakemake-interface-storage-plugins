@@ -51,6 +51,13 @@ snakemake = { git = "https://github.com/snakemake/snakemake.git" }
 
 [tool.mypy]
 ignore_missing_imports = true # Temporary until https://github.com/snakemake/snakemake-interface-common/pull/55
+disallow_untyped_defs = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+# TODO:: figure out expected types for the TestRegistryBase class
+module = "snakemake_interface_storage_plugins.tests"
+ignore_errors = true
 
 [tool.pixi.feature.dev.tasks]
 format = "ruff format snakemake_interface_storage_plugins"
