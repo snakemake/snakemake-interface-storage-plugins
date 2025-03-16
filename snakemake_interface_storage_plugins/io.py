@@ -6,6 +6,7 @@ __license__ = "MIT"
 from abc import abstractmethod
 import re
 from typing import Dict
+from typing import Optional
 
 
 WILDCARD_REGEX = re.compile(
@@ -26,7 +27,7 @@ WILDCARD_REGEX = re.compile(
 )
 
 
-def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False):
+def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False) -> str:
     """Return constant prefix of a pattern, removing everything from the first
     wildcard on.
 
