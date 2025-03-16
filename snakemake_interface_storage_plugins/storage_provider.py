@@ -5,13 +5,13 @@ __license__ = "MIT"
 
 
 from contextlib import asynccontextmanager
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from fractions import Fraction
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, AsyncGenerator
 
 from throttler import Throttler
 from snakemake_interface_common.exceptions import WorkflowError
@@ -40,13 +40,15 @@ class StorageQueryValidationResult:
     valid: bool
     reason: Optional[str] = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.valid:
             return f"query {self.query} is valid"
-        else:
+        elif self.reason:
             return f"query {self.query} is invalid: {self.reason}"
+        else:
+            return f"query {self.query} is invalid. Reason Unknown"
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return self.valid
 
 
@@ -92,7 +94,6 @@ class ExampleQuery:
     type: QueryType
 
 
-@dataclass
 class StorageProviderBase(ABC):
     """Abstract base class for Snakemake storage providers.
 
@@ -117,27 +118,43 @@ class StorageProviderBase(ABC):
 
     # Class attributes with type hints
     local_prefix: Path
-    settings: Optional[StorageProviderSettingsBase] = None
-    keep_local: bool = False
-    retrieve: bool = True
-    is_default: bool = False
-    _rate_limiters: Dict[Any, Throttler] = field(default_factory=dict, init=False)
+    settings: Optional[StorageProviderSettingsBase]
+    keep_local: bool
+    retrieve: bool
+    is_default: bool
+    _rate_limiters: Dict[Any, Throttler]
 
-    def __post_init__(self):
-        """Hook for subclasses to perform additional initialization.
-
-        Subclasses may override this method to perform additional setup
-        after the base class has been initialized and then call the base
-        class implementation using `super().__post_init__()`.
-        """
+    def __init__(
+        self,
+        local_prefix: Path,
+        settings: Optional[StorageProviderSettingsBase] = None,
+        keep_local: bool = False,
+        retrieve: bool = True,
+        is_default: bool = False,
+    ):
+        self.local_prefix = local_prefix
+        self.settings = settings
+        self.keep_local = keep_local
+        self.retrieve = retrieve
+        self.is_default = is_default
+        self._rate_limiters = dict()
         try:
             self.local_prefix.mkdir(parents=True, exist_ok=True)
         except OSError as e:
             raise WorkflowError(
                 f"Failed to create local storage prefix {self.local_prefix}", e
             )
+        self.__post_init__()
 
-    def rate_limiter(self, query: str, operation: Operation):
+    def __post_init__(self) -> None:
+        """Hook for subclasses to perform additional initialization.
+
+        Subclasses may override this method to perform additional setup
+        after the base class has been initialized.
+        """
+        pass
+
+    def rate_limiter(self, query: str, operation: Operation) -> Throttler:
         if not self.use_rate_limiter():
             return self._noop_context()
         else:
@@ -154,7 +171,7 @@ class StorageProviderBase(ABC):
             return self._rate_limiters[key]
 
     @asynccontextmanager
-    async def _noop_context(self):
+    async def _noop_context(self) -> AsyncGenerator[Any, Any]:
         yield
 
     @classmethod
@@ -222,7 +239,7 @@ class StorageProviderBase(ABC):
         )
 
     @classmethod
-    def get_storage_object_cls(cls):
+    def get_storage_object_cls(cls) -> type:
         provider = sys.modules[cls.__module__]  # get module of derived class
         return provider.StorageObject
 
@@ -232,7 +249,7 @@ class StorageProviderBase(ABC):
         keep_local: Optional[bool] = None,
         retrieve: Optional[bool] = None,
         static: bool = False,
-    ):
+    ) -> Any:
         from snakemake_interface_storage_plugins.storage_object import (
             StaticStorageObjectProxy,
         )

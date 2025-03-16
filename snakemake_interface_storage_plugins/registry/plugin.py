@@ -12,11 +12,6 @@ from snakemake_interface_storage_plugins import common
 
 from snakemake_interface_common.plugin_registry.plugin import PluginBase
 
-from snakemake_interface_storage_plugins.storage_object import (
-    StorageObjectRead,
-    StorageObjectWrite,
-)
-
 
 @dataclass
 class Plugin(PluginBase):
@@ -30,18 +25,22 @@ class Plugin(PluginBase):
         return True
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self._name
 
     @property
-    def cli_prefix(self):
+    def cli_prefix(self) -> str:
         return "storage-" + self.name.replace(common.storage_plugin_module_prefix, "")
 
     @property
-    def settings_cls(self):
+    def settings_cls(self) -> Optional[Type[StorageProviderSettingsBase]]:
         return self._storage_settings_cls
 
-    def is_read_write(self):
-        return issubclass(self.storage_object, StorageObjectWrite) and issubclass(
-            self.storage_object, StorageObjectRead
+    def is_read_write(self) -> bool:
+        from snakemake_interface_storage_plugins.storage_provider import (
+            StorageProviderBase,
         )
+
+        assert isinstance(self.storage_provider, StorageProviderBase)
+
+        return self.storage_provider.is_read_write
