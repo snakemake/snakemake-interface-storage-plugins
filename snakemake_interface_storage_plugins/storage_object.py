@@ -3,26 +3,25 @@ __copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
+import copy
 import os
+import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
-import shutil
-from typing import Iterable, Optional
+from typing import Dict, Iterable, Optional
 
-from wrapt import ObjectProxy
 from reretry import retry
-import copy
-
 from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
-from snakemake_interface_storage_plugins.common import Operation
+from throttler import Throttler
+from wrapt import ObjectProxy
 
+from snakemake_interface_storage_plugins.common import Operation
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import (
     StorageProviderBase,
     StorageQueryValidationResult,
 )
-
 
 retry_decorator = retry(tries=3, delay=3, backoff=2, logger=get_logger())
 
