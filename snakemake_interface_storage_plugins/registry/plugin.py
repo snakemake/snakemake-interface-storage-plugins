@@ -41,7 +41,7 @@ class Plugin(PluginBase):
         return self._storage_settings_cls
 
 
-    def is_read_write(self):
+    def is_read_write(self) -> bool:
         return issubclass(self.storage_object, StorageObjectWrite) and issubclass(
             self.storage_object, StorageObjectRead
         )

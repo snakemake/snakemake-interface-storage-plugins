@@ -115,7 +115,7 @@ class StorageObjectBase(ABC):
 
 class StorageObjectRead(StorageObjectBase):
     @abstractmethod
-    async def inventory(self, cache: IOCacheStorageInterface):
+    async def inventory(self, cache: IOCacheStorageInterface) -> None:
         """From this file, try to find as much existence and modification date
         information as possible.
         """
@@ -127,7 +127,7 @@ class StorageObjectRead(StorageObjectBase):
     def get_inventory_parent(self) -> Optional[str]: ...
 
     @abstractmethod
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Perform local cleanup of any remainders of the storage object."""
         ...
 
@@ -141,7 +141,7 @@ class StorageObjectRead(StorageObjectBase):
     def size(self) -> int: ...
 
     @abstractmethod
-    def retrieve_object(self): ...
+    def retrieve_object(self) -> None: ...
 
     async def managed_size(self) -> int:
         try:
@@ -166,7 +166,7 @@ class StorageObjectRead(StorageObjectBase):
                 f"Failed to check existence of {self.print_query}"
             ) from e
 
-    async def managed_retrieve(self):
+    async def managed_retrieve(self) -> None:
         try:
             self.local_path().parent.mkdir(parents=True, exist_ok=True)
             async with self._rate_limiter(Operation.RETRIEVE):
@@ -186,12 +186,12 @@ class StorageObjectRead(StorageObjectBase):
 
 class StorageObjectWrite(StorageObjectBase):
     @abstractmethod
-    def store_object(self): ...
+    def store_object(self) -> None: ...
 
     @abstractmethod
-    def remove(self): ...
+    def remove(self) -> None: ...
 
-    async def managed_remove(self):
+    async def managed_remove(self) -> None:
         try:
             async with self._rate_limiter(Operation.REMOVE):
                 self.remove()
@@ -200,7 +200,7 @@ class StorageObjectWrite(StorageObjectBase):
                 f"Failed to remove storage object {self.print_query}", e
             )
 
-    async def managed_store(self):
+    async def managed_store(self) -> None:
         try:
             async with self._rate_limiter(Operation.STORE):
                 self.store_object()
@@ -221,11 +221,11 @@ class StorageObjectGlob(StorageObjectBase):
 
 class StorageObjectTouch(StorageObjectBase):
     @abstractmethod
-    def touch(self):
+    def touch(self) -> None:
         """Touch the object."""
         ...
 
-    async def managed_touch(self):
+    async def managed_touch(self) -> None:
         try:
             async with self._rate_limiter(Operation.TOUCH):
                 self.touch()
