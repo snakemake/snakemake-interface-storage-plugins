@@ -35,20 +35,20 @@ class StaticStorageObjectProxy(ObjectProxy):
 
     """
 
-    def exists(self):
+    def exists(self) -> bool:
         return True
 
     def mtime(self) -> float:
         return float("-inf")
 
-    def is_newer(self, time):
+    def is_newer(self, time: float) -> bool:
         return False
 
-    def __copy__(self):
+    def __copy__(self) -> "StaticStorageObjectProxy":
         copied_wrapped = copy.copy(self.__wrapped__)
         return type(self)(copied_wrapped)
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: Dict) -> "StaticStorageObjectProxy":
         copied_wrapped = copy.deepcopy(self.__wrapped__, memo)
         return type(self)(copied_wrapped)
 
@@ -75,7 +75,7 @@ class StorageObjectBase(ABC):
         self._overwrite_local_path: Optional[Path] = None
         self.__post_init__()
 
-    def __post_init__(self):  # noqa B027
+    def __post_init__(self) -> None:  # noqa B027
         pass
 
     def set_local_path(self, path: Path) -> None:
@@ -110,7 +110,7 @@ class StorageObjectBase(ABC):
         # part and any optional parameters if that does not hamper the uniqueness.
         ...
 
-    def _rate_limiter(self, operation: Operation):
+    def _rate_limiter(self, operation: Operation) -> Throttler:
         return self.provider.rate_limiter(self.query, operation)
 
 
