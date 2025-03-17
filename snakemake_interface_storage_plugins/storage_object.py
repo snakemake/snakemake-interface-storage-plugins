@@ -3,25 +3,23 @@ __copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
-import copy
 import os
-import shutil
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, Iterable, Optional
+import shutil
+from typing import Iterable, Optional
 
+from wrapt import ObjectProxy
 from reretry import retry
+import copy
+
 from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
-from throttler import Throttler
-from wrapt import ObjectProxy
-
 from snakemake_interface_storage_plugins.common import Operation
+
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
-from snakemake_interface_storage_plugins.storage_provider import (
-    StorageProviderBase,
-    StorageQueryValidationResult,
-)
+from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
+
 
 retry_decorator = retry(tries=3, delay=3, backoff=2, logger=get_logger())
 
@@ -34,20 +32,20 @@ class StaticStorageObjectProxy(ObjectProxy):
 
     """
 
-    def exists(self) -> bool:
+    def exists(self):
         return True
 
     def mtime(self) -> float:
         return float("-inf")
 
-    def is_newer(self, time: float) -> bool:
+    def is_newer(self, time):
         return False
 
-    def __copy__(self) -> "StaticStorageObjectProxy":
+    def __copy__(self):
         copied_wrapped = copy.copy(self.__wrapped__)
         return type(self)(copied_wrapped)
 
-    def __deepcopy__(self, memo: Dict) -> "StaticStorageObjectProxy":
+    def __deepcopy__(self, memo):
         copied_wrapped = copy.deepcopy(self.__wrapped__, memo)
         return type(self)(copied_wrapped)
 
@@ -71,10 +69,10 @@ class StorageObjectBase(ABC):
         self.retrieve = retrieve
         self.provider = provider
         self.print_query = self.provider.safe_print(self.query)
-        self._overwrite_local_path: Optional[Path] = None
+        self._overwrite_local_path = None
         self.__post_init__()
 
-    def __post_init__(self) -> None:  # noqa B027
+    def __post_init__(self):  # noqa B027
         pass
 
     def set_local_path(self, path: Path) -> None:
@@ -83,9 +81,7 @@ class StorageObjectBase(ABC):
 
     def is_valid_query(self) -> bool:
         """Return True is the query is valid for this storage provider."""
-        is_valid: StorageQueryValidationResult
-        is_valid = self.provider.is_valid_query(self.query)
-        return is_valid.valid
+        return self.provider.is_valid_query(self.query)
 
     def local_path(self) -> Path:
         """Return the local path that would represent the query."""
@@ -109,13 +105,13 @@ class StorageObjectBase(ABC):
         # part and any optional parameters if that does not hamper the uniqueness.
         ...
 
-    def _rate_limiter(self, operation: Operation) -> Throttler:
+    def _rate_limiter(self, operation: Operation):
         return self.provider.rate_limiter(self.query, operation)
 
 
 class StorageObjectRead(StorageObjectBase):
     @abstractmethod
-    async def inventory(self, cache: IOCacheStorageInterface) -> None:
+    async def inventory(self, cache: IOCacheStorageInterface):
         """From this file, try to find as much existence and modification date
         information as possible.
         """
@@ -127,7 +123,7 @@ class StorageObjectRead(StorageObjectBase):
     def get_inventory_parent(self) -> Optional[str]: ...
 
     @abstractmethod
-    def cleanup(self) -> None:
+    def cleanup(self):
         """Perform local cleanup of any remainders of the storage object."""
         ...
 
@@ -141,7 +137,7 @@ class StorageObjectRead(StorageObjectBase):
     def size(self) -> int: ...
 
     @abstractmethod
-    def retrieve_object(self) -> None: ...
+    def retrieve_object(self): ...
 
     async def managed_size(self) -> int:
         try:
@@ -166,7 +162,7 @@ class StorageObjectRead(StorageObjectBase):
                 f"Failed to check existence of {self.print_query}"
             ) from e
 
-    async def managed_retrieve(self) -> None:
+    async def managed_retrieve(self):
         try:
             self.local_path().parent.mkdir(parents=True, exist_ok=True)
             async with self._rate_limiter(Operation.RETRIEVE):
@@ -186,12 +182,12 @@ class StorageObjectRead(StorageObjectBase):
 
 class StorageObjectWrite(StorageObjectBase):
     @abstractmethod
-    def store_object(self) -> None: ...
+    def store_object(self): ...
 
     @abstractmethod
-    def remove(self) -> None: ...
+    def remove(self): ...
 
-    async def managed_remove(self) -> None:
+    async def managed_remove(self):
         try:
             async with self._rate_limiter(Operation.REMOVE):
                 self.remove()
@@ -200,7 +196,7 @@ class StorageObjectWrite(StorageObjectBase):
                 f"Failed to remove storage object {self.print_query}", e
             )
 
-    async def managed_store(self) -> None:
+    async def managed_store(self):
         try:
             async with self._rate_limiter(Operation.STORE):
                 self.store_object()
@@ -221,11 +217,11 @@ class StorageObjectGlob(StorageObjectBase):
 
 class StorageObjectTouch(StorageObjectBase):
     @abstractmethod
-    def touch(self) -> None:
+    def touch(self):
         """Touch the object."""
         ...
 
-    async def managed_touch(self) -> None:
+    async def managed_touch(self):
         try:
             async with self._rate_limiter(Operation.TOUCH):
                 self.touch()

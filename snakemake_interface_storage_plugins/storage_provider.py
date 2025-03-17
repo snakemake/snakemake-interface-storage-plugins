@@ -11,7 +11,7 @@ from fractions import Fraction
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, AsyncGenerator
+from typing import Any, Dict, Generic, List, Optional, AsyncGenerator, TypeVar
 
 from throttler import Throttler
 from snakemake_interface_common.exceptions import WorkflowError
@@ -94,7 +94,14 @@ class ExampleQuery:
     type: QueryType
 
 
-class StorageProviderBase(ABC):
+TStorageProviderSettings = TypeVar(
+    "TStorageProviderSettings",
+    bound="StorageProviderSettingsBase",
+    default=StorageProviderSettingsBase,
+)
+
+
+class StorageProviderBase(ABC, Generic[TStorageProviderSettings]):
     """Abstract base class for Snakemake storage providers.
 
     Defines the interface for interacting with external storage systems

@@ -4,7 +4,7 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 from dataclasses import dataclass
-from typing import Optional, Type
+from typing import Optional, Type, TYPE_CHECKING
 from snakemake_interface_storage_plugins.settings import (
     StorageProviderSettingsBase,
 )
@@ -17,11 +17,14 @@ from snakemake_interface_storage_plugins.storage_object import (
     StorageObjectWrite,
 )
 
+if TYPE_CHECKING:
+    from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
+    from snakemake_interface_storage_plugins.storage_object import StorageObjectBase
 
 @dataclass
 class Plugin(PluginBase[StorageProviderSettingsBase]):
-    storage_provider: object
-    storage_object: object
+    storage_provider: Type["StorageProviderBase"]
+    storage_object: Type["StorageObjectBase"]
     _storage_settings_cls: Optional[Type[StorageProviderSettingsBase]]
     _name: str
 
