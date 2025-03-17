@@ -17,9 +17,11 @@ from snakemake_interface_storage_plugins.storage_object import (
     StorageObjectWrite,
 )
 
+
 if TYPE_CHECKING:
     from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
     from snakemake_interface_storage_plugins.storage_object import StorageObjectBase
+
 
 @dataclass
 class Plugin(PluginBase[StorageProviderSettingsBase]):
