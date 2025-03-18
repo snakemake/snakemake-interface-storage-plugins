@@ -5,6 +5,7 @@ __license__ = "MIT"
 
 from abc import ABC, abstractmethod
 import asyncio
+import logging
 from pathlib import Path
 import shutil
 import sys
@@ -18,6 +19,9 @@ from snakemake_interface_storage_plugins.settings import (
     StorageProviderSettingsBase,
 )
 from snakemake.io import IOCache
+
+
+logger = logging.getLogger(__name__)
 
 
 class TestStorageBase(ABC):
@@ -129,6 +133,7 @@ class TestStorageBase(ABC):
 
     def _get_provider(self, tmp_path):
         return self.get_storage_provider_cls()(
+            logger=logger,
             local_prefix=Path(tmp_path) / "local_prefix",
             settings=self.get_storage_provider_settings(),
         )
