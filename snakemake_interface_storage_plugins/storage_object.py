@@ -3,6 +3,7 @@ __copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
+import asyncio
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -11,11 +12,12 @@ from typing import Iterable, Optional
 
 from wrapt import ObjectProxy
 from reretry import retry
+from humanfriendly import format_size, format_timespan
 import copy
 
 from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
-from snakemake_interface_storage_plugins.common import Operation
+from snakemake_interface_storage_plugins.common import Operation, get_disk_free
 
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
@@ -134,7 +136,17 @@ class StorageObjectRead(StorageObjectBase):
     def mtime(self) -> float: ...
 
     @abstractmethod
-    def size(self) -> int: ...
+    def size(self) -> int: 
+        """Size of the object in bytes. Should return 0 for directories."""
+        ...
+
+    @abstractmethod
+    def local_footprint(self) -> int:
+        """local footprint is the size of the object on the local disk
+        For directories, this should return the recursive sum of the
+        directory file sizes. Defaults to self.size() for backwards compatibility.
+        """
+        return self.size()
 
     @abstractmethod
     def retrieve_object(self): ...
@@ -163,6 +175,7 @@ class StorageObjectRead(StorageObjectBase):
             )
 
     async def managed_retrieve(self):
+        await self.wait_for_free_space()
         try:
             self.local_path().parent.mkdir(parents=True, exist_ok=True)
             async with self._rate_limiter(Operation.RETRIEVE):
@@ -177,6 +190,50 @@ class StorageObjectRead(StorageObjectBase):
                     os.remove(local_path)
             raise WorkflowError(
                 f"Failed to retrieve storage object from {self.print_query}", e
+            )
+
+    async def managed_local_footprint(self) -> int:
+        try:
+            async with self._rate_limiter(Operation.SIZE):
+                return self.local_footprint()
+        except Exception as e:
+            raise WorkflowError(
+                f"Failed to get expected local footprint (i.e. size) "
+                f"of {self.print_query}", e
+            )
+
+    async def wait_for_free_space(self):
+        """Wait for free space on the disk."""
+        size = await self.managed_local_footprint()
+        disk_free = get_disk_free(self.local_path())
+
+        wait_time = self.provider.wait_for_free_local_storage
+
+        if wait_time is not None:
+            if wait_time < 1:
+                raise WorkflowError(
+                    "Wait time for free space on local storage has to be at least "
+                    "1 second or unset."
+                )
+            wait_time_step = 60 if wait_time > 60 else 1
+
+            waited = 0
+            while wait_time_step is not None and waited < wait_time and size > disk_free:
+                self.provider.logger.info(
+                    f"Waiting {format_timespan(wait_time_step)} for enough free space to "
+                    f"store {self.local_path()} "
+                    f"({format_size(size)} > {format_size(disk_free)})"
+                )
+                await asyncio.sleep(wait_time_step)
+                waited += wait_time_step
+                disk_free = get_disk_free(self.local_path())
+
+        if size > disk_free:
+            raise WorkflowError(
+                f"Cannot store {self.local_path()} "
+                f"({format_size(size)} > {format_size(disk_free)}), "
+                f"waited {format_timespan(self.provider.wait_for_free_local_storage)} "
+                "for more space."
             )
 
 
