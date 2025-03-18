@@ -216,9 +216,7 @@ class StorageObjectRead(StorageObjectBase):
             wait_time_step = 60 if wait_time > 60 else 1
 
             waited = 0
-            while (
-                waited < wait_time and size > disk_free
-            ):
+            while waited < wait_time and size > disk_free:
                 self.provider.logger.info(
                     f"Waiting {format_timespan(wait_time_step)} for enough free "
                     f"space to store {self.local_path()} "
