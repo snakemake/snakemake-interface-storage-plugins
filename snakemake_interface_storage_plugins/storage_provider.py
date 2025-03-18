@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from enum import Enum
 from fractions import Fraction
+from logging import Logger
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
@@ -57,11 +58,15 @@ class StorageProviderBase(ABC):
     def __init__(
         self,
         local_prefix: Path,
+        logger: Logger,
+        wait_for_free_local_storage: Optional[int] = None,
         settings: Optional[StorageProviderSettingsBase] = None,
         keep_local=False,
         retrieve=True,
         is_default=False,
     ):
+        self.logger: Logger = logger
+        self.wait_for_free_local_storage: int = wait_for_free_local_storage
         try:
             local_prefix.mkdir(parents=True, exist_ok=True)
         except OSError as e:
