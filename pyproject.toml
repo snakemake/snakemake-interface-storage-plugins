@@ -21,7 +21,7 @@ flake8 = "^7.1.1"
 flake8-bugbear = "^24.8.19"
 pytest = "^8.3"
 snakemake-storage-plugin-http = {git="https://github.com/snakemake/snakemake-storage-plugin-http.git"}
-snakemake = {git="https://github.com/snakemake/snakemake.git"}
+snakemake = {git="https://github.com/snakemake/snakemake.git", branch="feat/pass-logger-to-storage"}
 
 [build-system]
 requires = ["poetry-core"]
