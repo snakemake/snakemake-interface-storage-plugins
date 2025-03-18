@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.6.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.5.0...v3.6.0) (2025-03-18)
+
+
+### Features
+
+* introduce waiting for enough free space on local storage; require passing the logger to the storage provider ([#68](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/68)) ([cb80c6b](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/cb80c6b301c91204a6dbc93cdfd80f4baa5b2407))
+
+
+### Bug Fixes
+
+* improve storage error messages to include any underlying errors ([066664b](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/066664b784a227e371b268a484a50cddff976212))
+
 ## [3.5.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.4.0...v3.5.0) (2025-03-14)
 
 
