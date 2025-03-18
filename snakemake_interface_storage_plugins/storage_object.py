@@ -136,7 +136,7 @@ class StorageObjectRead(StorageObjectBase):
     def mtime(self) -> float: ...
 
     @abstractmethod
-    def size(self) -> int: 
+    def size(self) -> int:
         """Size of the object in bytes. Should return 0 for directories."""
         ...
 
@@ -169,9 +169,7 @@ class StorageObjectRead(StorageObjectBase):
             async with self._rate_limiter(Operation.EXISTS):
                 return self.exists()
         except Exception as e:
-            raise WorkflowError(
-                f"Failed to check existence of {self.print_query}", e
-            )
+            raise WorkflowError(f"Failed to check existence of {self.print_query}", e)
 
     async def managed_retrieve(self):
         await self.wait_for_free_space()
@@ -198,7 +196,8 @@ class StorageObjectRead(StorageObjectBase):
         except Exception as e:
             raise WorkflowError(
                 f"Failed to get expected local footprint (i.e. size) "
-                f"of {self.print_query}", e
+                f"of {self.print_query}",
+                e,
             )
 
     async def wait_for_free_space(self):
@@ -217,7 +216,9 @@ class StorageObjectRead(StorageObjectBase):
             wait_time_step = 60 if wait_time > 60 else 1
 
             waited = 0
-            while wait_time_step is not None and waited < wait_time and size > disk_free:
+            while (
+                wait_time_step is not None and waited < wait_time and size > disk_free
+            ):
                 self.provider.logger.info(
                     f"Waiting {format_timespan(wait_time_step)} for enough free space to "
                     f"store {self.local_path()} "
@@ -282,6 +283,4 @@ class StorageObjectTouch(StorageObjectBase):
             async with self._rate_limiter(Operation.TOUCH):
                 self.touch()
         except Exception as e:
-            raise WorkflowError(
-                f"Failed to touch storage object {self.print_query}", e
-            )
+            raise WorkflowError(f"Failed to touch storage object {self.print_query}", e)
