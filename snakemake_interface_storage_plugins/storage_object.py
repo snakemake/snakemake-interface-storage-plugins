@@ -220,8 +220,8 @@ class StorageObjectRead(StorageObjectBase):
                 wait_time_step is not None and waited < wait_time and size > disk_free
             ):
                 self.provider.logger.info(
-                    f"Waiting {format_timespan(wait_time_step)} for enough free space to "
-                    f"store {self.local_path()} "
+                    f"Waiting {format_timespan(wait_time_step)} for enough free "
+                    f"space to store {self.local_path()} "
                     f"({format_size(size)} > {format_size(disk_free)})"
                 )
                 await asyncio.sleep(wait_time_step)
