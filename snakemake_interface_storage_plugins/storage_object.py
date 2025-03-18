@@ -140,7 +140,6 @@ class StorageObjectRead(StorageObjectBase):
         """Size of the object in bytes. Should return 0 for directories."""
         ...
 
-    @abstractmethod
     def local_footprint(self) -> int:
         """local footprint is the size of the object on the local disk
         For directories, this should return the recursive sum of the
