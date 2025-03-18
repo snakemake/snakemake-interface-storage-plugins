@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.6.0...v4.0.0) (2025-03-18)
+
+
+### Miscellaneous Chores
+
+* release 4.0.0 ([12041a7](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/12041a74106d4fd71c32e0dbbf9cba496bf1a799))
+
 ## [3.6.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.5.0...v3.6.0) (2025-03-18)
 
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snakemake-interface-storage-plugins"
-version = "3.6.0"
+version = "4.0.0"
 description = "This package provides a stable interface for interactions between Snakemake and its storage plugins."
 authors = ["Johannes Koester <johannes.koester@uni-due.de>"]
 readme = "README.md"
