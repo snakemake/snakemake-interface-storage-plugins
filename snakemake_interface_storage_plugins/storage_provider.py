@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from enum import Enum
 from fractions import Fraction
+from logging import Logger
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
@@ -134,11 +135,21 @@ class StorageProviderBase(ABC, Generic[TStorageProviderSettings]):
     def __init__(
         self,
         local_prefix: Path,
+        logger: Logger,
+        wait_for_free_local_storage: Optional[int] = None,
         settings: Optional[StorageProviderSettingsBase] = None,
         keep_local: bool = False,
         retrieve: bool = True,
         is_default: bool = False,
     ):
+        self.logger: Logger = logger
+        self.wait_for_free_local_storage: int = wait_for_free_local_storage
+        try:
+            local_prefix.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            raise WorkflowError(
+                f"Failed to create local storage prefix {local_prefix}", e
+            )
         self.local_prefix = local_prefix
         self.settings = settings
         self.keep_local = keep_local

@@ -1,5 +1,38 @@
 # Changelog
 
+## [4.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.0.1...v4.1.0) (2025-03-19)
+
+
+### Features
+
+* introduce attribute StorageObjectBase.is_ondemand_eligible, allowing to inform the plugin about whether it can e.g. lazily mount or symlink the storage object instead of downloading/copying it ([c3cee67](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/c3cee6727aa998da0fb8c019105dc357d10885b4))
+
+## [4.0.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.0.0...v4.0.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* use snakemake from git for testing ([586f144](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/586f14450a6c641040c3d50a87da9e21b689a97c))
+
+## [4.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.6.0...v4.0.0) (2025-03-18)
+
+
+### Miscellaneous Chores
+
+* release 4.0.0 ([12041a7](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/12041a74106d4fd71c32e0dbbf9cba496bf1a799))
+
+## [3.6.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.5.0...v3.6.0) (2025-03-18)
+
+
+### Features
+
+* introduce waiting for enough free space on local storage; require passing the logger to the storage provider ([#68](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/68)) ([cb80c6b](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/cb80c6b301c91204a6dbc93cdfd80f4baa5b2407))
+
+
+### Bug Fixes
+
+* improve storage error messages to include any underlying errors ([066664b](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/066664b784a227e371b268a484a50cddff976212))
+
 ## [3.5.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.4.0...v3.5.0) (2025-03-14)
 
 

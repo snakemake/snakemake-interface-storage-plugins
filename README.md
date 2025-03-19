@@ -68,6 +68,9 @@ class StorageProviderSettings(StorageProviderSettingsBase):
 # This class can be empty as the one below.
 # You can however use it to store global information or maintain e.g. a connection
 # pool.
+# Inside of the provider, you can use self.logger (a normal Python logger of type 
+# logging.Logger) to log any additional informations or
+# warnings.
 class StorageProvider(StorageProviderBase):
     # For compatibility with future changes, you should not overwrite the __init__
     # method. Instead, use __post_init__ to set additional attributes and initialize
@@ -129,6 +132,8 @@ class StorageProvider(StorageProviderBase):
 # storage (e.g. because it is read-only see
 # snakemake-storage-http for comparison), remove the corresponding base classes
 # from the list of inherited items.
+# Inside of the object, you can use self.provider to access the provider (e.g. for )
+# self.provider.logger, see above, or self.provider.settings).
 class StorageObject(
     StorageObjectRead,
     StorageObjectWrite,
@@ -194,6 +199,16 @@ class StorageObject(
     @retry_decorator
     def retrieve_object(self):
         # Ensure that the object is accessible locally under self.local_path()
+        # Optionally, this can make use of the attribute self.is_ondemand_eligible,
+        # which indicates that the object could be retrieved on demand,
+        # e.g. by only symlinking or mounting it from whatever network storage this
+        # plugin provides. For example, objects with self.is_ondemand_eligible == True
+        # could mount the object via fuse instead of downloading it.
+        # The job can then transparently access only the parts that matter to it
+        # without having to wait for the full download.
+        # On demand eligibility is calculated via Snakemake's access pattern annotation.
+        # If no access pattern is annotated by the workflow developers,
+        # self.is_ondemand_eligible is by default set to False.
         ...
 
     # The following two methods are only required if the class inherits from
