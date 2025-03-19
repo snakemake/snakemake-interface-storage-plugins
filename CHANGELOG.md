@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.0.0...v4.0.1) (2025-03-18)
+
+
+### Bug Fixes
+
+* use snakemake from git for testing ([586f144](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/586f14450a6c641040c3d50a87da9e21b689a97c))
+
 ## [4.0.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v3.6.0...v4.0.0) (2025-03-18)
 
 
