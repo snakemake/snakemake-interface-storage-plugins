@@ -98,7 +98,6 @@ class ExampleQuery:
 TStorageProviderSettings = TypeVar(
     "TStorageProviderSettings",
     bound="StorageProviderSettingsBase",
-    default=StorageProviderSettingsBase,
 )
 
 
