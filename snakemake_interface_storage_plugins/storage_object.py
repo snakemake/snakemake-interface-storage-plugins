@@ -3,6 +3,7 @@ __copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
+import asyncio
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -11,11 +12,12 @@ from typing import Iterable, Optional
 
 from wrapt import ObjectProxy
 from reretry import retry
+from humanfriendly import format_size, format_timespan
 import copy
 
 from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
-from snakemake_interface_storage_plugins.common import Operation
+from snakemake_interface_storage_plugins.common import Operation, get_disk_free
 
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
@@ -70,6 +72,7 @@ class StorageObjectBase(ABC):
         self.provider = provider
         self.print_query = self.provider.safe_print(self.query)
         self._overwrite_local_path = None
+        self.is_ondemand_eligible: bool = False
         self.__post_init__()
 
     def __post_init__(self):  # noqa B027
@@ -134,35 +137,57 @@ class StorageObjectRead(StorageObjectBase):
     def mtime(self) -> float: ...
 
     @abstractmethod
-    def size(self) -> int: ...
+    def size(self) -> int:
+        """Size of the object in bytes. Should return 0 for directories."""
+        ...
+
+    def local_footprint(self) -> int:
+        """local footprint is the size of the object on the local disk
+        For directories, this should return the recursive sum of the
+        directory file sizes. Defaults to self.size() for backwards compatibility.
+        """
+        return self.size()
 
     @abstractmethod
-    def retrieve_object(self): ...
+    def retrieve_object(self):
+        """Ensure that the object is accessible locally under self.local_path()
+
+        Optionally, this can make use of the attribute self.is_ondemand_eligible,
+        which indicates that the object could be retrieved on demand,
+        e.g. by only symlinking or mounting it from whatever network storage this
+        plugin provides. For example, objects with self.is_ondemand_eligible == True
+        could mount the object via fuse instead of downloading it.
+        The job can then transparently access only the parts that matter to it
+        without having to wait for the full download.
+        On demand eligibility is calculated via Snakemake's access pattern annotation.
+        If no access pattern is annotated by the workflow developers,
+        self.is_ondemand_eligible is by default set to False.
+        """
+        ...
 
     async def managed_size(self) -> int:
         try:
             async with self._rate_limiter(Operation.SIZE):
                 return self.size()
         except Exception as e:
-            raise WorkflowError(f"Failed to get size of {self.print_query}") from e
+            raise WorkflowError(f"Failed to get size of {self.print_query}", e)
 
     async def managed_mtime(self) -> float:
         try:
             async with self._rate_limiter(Operation.MTIME):
                 return self.mtime()
         except Exception as e:
-            raise WorkflowError(f"Failed to get mtime of {self.print_query}") from e
+            raise WorkflowError(f"Failed to get mtime of {self.print_query}", e)
 
     async def managed_exists(self) -> bool:
         try:
             async with self._rate_limiter(Operation.EXISTS):
                 return self.exists()
         except Exception as e:
-            raise WorkflowError(
-                f"Failed to check existence of {self.print_query}"
-            ) from e
+            raise WorkflowError(f"Failed to check existence of {self.print_query}", e)
 
     async def managed_retrieve(self):
+        await self.wait_for_free_space()
         try:
             self.local_path().parent.mkdir(parents=True, exist_ok=True)
             async with self._rate_limiter(Operation.RETRIEVE):
@@ -176,8 +201,53 @@ class StorageObjectRead(StorageObjectBase):
                 else:
                     os.remove(local_path)
             raise WorkflowError(
-                f"Failed to retrieve storage object from {self.print_query}"
-            ) from e
+                f"Failed to retrieve storage object from {self.print_query}", e
+            )
+
+    async def managed_local_footprint(self) -> int:
+        try:
+            async with self._rate_limiter(Operation.SIZE):
+                return self.local_footprint()
+        except Exception as e:
+            raise WorkflowError(
+                f"Failed to get expected local footprint (i.e. size) "
+                f"of {self.print_query}",
+                e,
+            )
+
+    async def wait_for_free_space(self):
+        """Wait for free space on the disk."""
+        size = await self.managed_local_footprint()
+        disk_free = get_disk_free(self.local_path())
+
+        wait_time = self.provider.wait_for_free_local_storage
+
+        if wait_time is not None:
+            if wait_time < 1:
+                raise WorkflowError(
+                    "Wait time for free space on local storage has to be at least "
+                    "1 second or unset."
+                )
+            wait_time_step = 60 if wait_time > 60 else 1
+
+            waited = 0
+            while waited < wait_time and size > disk_free:
+                self.provider.logger.info(
+                    f"Waiting {format_timespan(wait_time_step)} for enough free "
+                    f"space to store {self.local_path()} "
+                    f"({format_size(size)} > {format_size(disk_free)})"
+                )
+                await asyncio.sleep(wait_time_step)
+                waited += wait_time_step
+                disk_free = get_disk_free(self.local_path())
+
+        if size > disk_free:
+            raise WorkflowError(
+                f"Cannot store {self.local_path()} "
+                f"({format_size(size)} > {format_size(disk_free)}), "
+                f"waited {format_timespan(self.provider.wait_for_free_local_storage)} "
+                "for more space."
+            )
 
 
 class StorageObjectWrite(StorageObjectBase):
@@ -226,6 +296,4 @@ class StorageObjectTouch(StorageObjectBase):
             async with self._rate_limiter(Operation.TOUCH):
                 self.touch()
         except Exception as e:
-            raise WorkflowError(
-                f"Failed to touch storage object {self.print_query}"
-            ) from e
+            raise WorkflowError(f"Failed to touch storage object {self.print_query}", e)
