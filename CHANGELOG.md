@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.0.1...v4.1.0) (2025-03-19)
+
+
+### Features
+
+* introduce attribute StorageObjectBase.is_ondemand_eligible, allowing to inform the plugin about whether it can e.g. lazily mount or symlink the storage object instead of downloading/copying it ([c3cee67](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/c3cee6727aa998da0fb8c019105dc357d10885b4))
+
 ## [4.0.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.0.0...v4.0.1) (2025-03-18)
 
 
