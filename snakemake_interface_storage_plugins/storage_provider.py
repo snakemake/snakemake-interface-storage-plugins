@@ -125,6 +125,8 @@ class StorageProviderBase(ABC, Generic[TStorageProviderSettings]):
 
     # Class attributes with type hints
     local_prefix: Path
+    logger: Logger
+    wait_for_free_local_storage: Optional[int]
     settings: Optional[StorageProviderSettingsBase]
     keep_local: bool
     retrieve: bool
@@ -142,7 +144,7 @@ class StorageProviderBase(ABC, Generic[TStorageProviderSettings]):
         is_default: bool = False,
     ):
         self.logger: Logger = logger
-        self.wait_for_free_local_storage: int = wait_for_free_local_storage
+        self.wait_for_free_local_storage = wait_for_free_local_storage
         try:
             local_prefix.mkdir(parents=True, exist_ok=True)
         except OSError as e:
