@@ -60,9 +60,9 @@ class TestStorageBase(ABC):
             file=sys.stderr,
         )
 
-        assert not (
-            self.store_only and self.retrieve_only
-        ), "store_only and retrieve_only may not be True at the same time"
+        assert not (self.store_only and self.retrieve_only), (
+            "store_only and retrieve_only may not be True at the same time"
+        )
 
         obj = self._get_obj(tmp_path, self.get_query(tmp_path))
 
