@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.0...v4.2.1) (2025-03-20)
+
+
+### Bug Fixes
+
+* adapt action job permissions to changes in github actions or pypi ([2b553d6](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/2b553d6be61ef357468d3106961de7d918869718))
+
 ## [4.2.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.1.0...v4.2.0) (2025-03-20)
 
 
