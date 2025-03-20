@@ -83,7 +83,7 @@ class StorageObjectBase(ABC):
         return self._is_ondemand_eligible and not self.keep_local
 
     @is_ondemand_eligible.setter
-    def is_ondemand_eligible(self, value: bool):
+    def is_ondemand_eligible(self, value: bool) -> None:
         self._is_ondemand_eligible = value
 
     def set_local_path(self, path: Path) -> None:
@@ -223,7 +223,7 @@ class StorageObjectRead(StorageObjectBase):
                 e,
             )
 
-    async def wait_for_free_space(self):
+    async def wait_for_free_space(self) -> None:
         """Wait for free space on the disk."""
         size = await self.managed_local_footprint()
         disk_free = get_disk_free(self.local_path())
@@ -253,7 +253,7 @@ class StorageObjectRead(StorageObjectBase):
             raise WorkflowError(
                 f"Cannot store {self.local_path()} "
                 f"({format_size(size)} > {format_size(disk_free)}), "
-                f"waited {format_timespan(self.provider.wait_for_free_local_storage)} "
+                f"waited {format_timespan(self.provider.wait_for_free_local_storage or 0)} "
                 "for more space."
             )
 
