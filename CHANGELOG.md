@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.1.0...v4.2.0) (2025-03-20)
+
+
+### Features
+
+* Integrate Pixi for improved CI/CD and update project configuration ([#64](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/64)) ([ff1120a](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/ff1120a9ed217db753663922aa0eef8194052289))
+
+
+### Bug Fixes
+
+* make ondemand eligibility determination smarter (respecting keep-local) ([#72](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/72)) ([43738d6](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/43738d613c7e5b0ddc5e00949cb04224f83ef986))
+
 ## [4.1.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.0.1...v4.1.0) (2025-03-19)
 
 
