@@ -66,17 +66,25 @@ class StorageObjectBase(ABC):
         retrieve: bool,
         provider: StorageProviderBase,
     ) -> None:
-        self.query = query
-        self.keep_local = keep_local
-        self.retrieve = retrieve
-        self.provider = provider
-        self.print_query = self.provider.safe_print(self.query)
+        self.query: str = query
+        self.keep_local: bool = keep_local
+        self.retrieve: bool = retrieve
+        self.provider: StorageProviderBase = provider
+        self.print_query: str = self.provider.safe_print(self.query)
         self._overwrite_local_path: Optional[Path] = None
-        self.is_ondemand_eligible: bool = False
+        self._is_ondemand_eligible: bool = False
         self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
         pass
+
+    @property
+    def is_ondemand_eligible(self) -> bool:
+        return self._is_ondemand_eligible and not self.keep_local
+
+    @is_ondemand_eligible.setter
+    def is_ondemand_eligible(self, value: bool):
+        self._is_ondemand_eligible = value
 
     def set_local_path(self, path: Path) -> None:
         """Set a custom local path for this storage object."""
