@@ -81,7 +81,7 @@ class StorageObjectBase(ABC):
     @property
     def is_ondemand_eligible(self) -> bool:
         return self._is_ondemand_eligible and not self.keep_local
-    
+
     @is_ondemand_eligible.setter
     def is_ondemand_eligible(self, value: bool):
         self._is_ondemand_eligible = value
