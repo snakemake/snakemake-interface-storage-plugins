@@ -46,6 +46,7 @@ class Plugin(PluginBase[StorageProviderSettingsBase]):
     def settings_cls(self) -> Optional[Type[StorageProviderSettingsBase]]:
         return self._storage_settings_cls
 
+    @property
     def is_read_write(self) -> bool:
         return issubclass(self.storage_object, StorageObjectWrite) and issubclass(
             self.storage_object, StorageObjectRead

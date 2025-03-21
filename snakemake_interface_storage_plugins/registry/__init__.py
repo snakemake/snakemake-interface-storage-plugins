@@ -27,7 +27,7 @@ class StoragePluginRegistry(PluginRegistryBase[Plugin]):
         return [
             plugin.name
             for plugin in self.plugins.values()
-            if plugin.storage_provider.is_read_write
+            if plugin.storage_provider.is_read_write is True
         ]
 
     @property

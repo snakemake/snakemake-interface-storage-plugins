@@ -127,7 +127,7 @@ class StorageProviderBase(ABC, Generic[TStorageProviderSettings]):
     local_prefix: Path
     logger: Logger
     wait_for_free_local_storage: Optional[int]
-    settings: Optional[StorageProviderSettingsBase]
+    settings: Optional[TStorageProviderSettings]
     keep_local: bool
     retrieve: bool
     is_default: bool
@@ -138,7 +138,7 @@ class StorageProviderBase(ABC, Generic[TStorageProviderSettings]):
         local_prefix: Path,
         logger: Logger,
         wait_for_free_local_storage: Optional[int] = None,
-        settings: Optional[StorageProviderSettingsBase] = None,
+        settings: Optional[TStorageProviderSettings] = None,
         keep_local: bool = False,
         retrieve: bool = True,
         is_default: bool = False,

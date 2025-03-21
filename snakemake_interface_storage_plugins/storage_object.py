@@ -8,7 +8,7 @@ import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 import shutil
-from typing import Iterable, Optional, AsyncContextManager, Dict
+from typing import Iterable, Optional, AsyncContextManager, Dict, TypeVar, Generic
 
 from wrapt import ObjectProxy
 from reretry import retry
@@ -52,27 +52,35 @@ class StaticStorageObjectProxy(ObjectProxy):
         return type(self)(copied_wrapped)
 
 
-class StorageObjectBase(ABC):
+TStorageProviderBase = TypeVar("TStorageProviderBase", bound=StorageProviderBase)
+
+
+class StorageObjectBase(ABC, Generic[TStorageProviderBase]):
     """This is an abstract class to be used to derive storage object classes for
     different cloud storage providers. For example, there could be classes for
     interacting with Amazon AWS S3 and Google Cloud Storage, both derived from this
     common base class.
     """
+    query: str
+    keep_local: bool
+    retrieve: bool
+    provider: TStorageProviderBase
+    print_query: str
+    _overwrite_local_path: Optional[Path] = None
+    _is_ondemand_eligible: bool = False
 
     def __init__(
         self,
         query: str,
         keep_local: bool,
         retrieve: bool,
-        provider: StorageProviderBase,
+        provider: TStorageProviderBase,
     ) -> None:
-        self.query: str = query
-        self.keep_local: bool = keep_local
-        self.retrieve: bool = retrieve
-        self.provider: StorageProviderBase = provider
-        self.print_query: str = self.provider.safe_print(self.query)
-        self._overwrite_local_path: Optional[Path] = None
-        self._is_ondemand_eligible: bool = False
+        self.query = query
+        self.keep_local  = keep_local
+        self.retrieve  = retrieve
+        self.provider = provider
+        self.print_query = self.provider.safe_print(self.query)
         self.__post_init__()
 
     def __post_init__(self) -> None:  # noqa B027
