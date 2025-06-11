@@ -96,6 +96,12 @@ class StorageProviderBase(ABC):
                     and self.settings.max_requests_per_second is not None
                 ):
                     rate = self.settings.max_requests_per_second
+
+                if rate is None or rate <= 0:
+                    raise WorkflowError(
+                        "max_requests_per_second must be a positive number, "
+                        f"got {rate}"
+                    )
                 max_status_checks_frac = Fraction(rate).limit_denominator()
                 self._rate_limiters[key] = Throttler(
                     rate_limit=max_status_checks_frac.numerator,
