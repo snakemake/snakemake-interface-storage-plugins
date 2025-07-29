@@ -1,6 +1,6 @@
 [project]
 name = "snakemake-interface-storage-plugins"
-version = "4.2.1"
+version = "4.2.2"
 description = "This package provides a stable interface for interactions between Snakemake and its storage plugins."
 readme = "README.md"
 requires-python = ">=3.11"

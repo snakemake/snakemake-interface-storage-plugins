@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.1...v4.2.2) (2025-07-29)
+
+
+### Documentation
+
+* use snakedeploy ([2ef0abe](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/2ef0abe703c620832166afd2a7065bdb4258e4cd))
+
 ## [4.2.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.0...v4.2.1) (2025-03-20)
 
 
