@@ -96,7 +96,7 @@ class TestStorageBase(ABC):
             assert obj.exists()
 
             assert isinstance(obj.mtime(), (float, int))
-            assert isinstance(obj.size(), int)
+            assert isinstance(obj.size(), int) and obj.size() >= 0
 
             self._test_inventory(obj)
 
