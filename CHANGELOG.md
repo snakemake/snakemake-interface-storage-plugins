@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.3](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.2...v4.2.3) (2025-09-10)
+
+
+### Bug Fixes
+
+* test size method ([#78](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/78)) ([d6f9a2a](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/d6f9a2a6b95cda739820eebe58e322c0eece2193))
+
 ## [4.2.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.1...v4.2.2) (2025-07-29)
 
 
