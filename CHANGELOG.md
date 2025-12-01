@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.0...v4.3.1) (2025-12-01)
+
+
+### Bug Fixes
+
+* turn FileOrDirectoryNotFoundError into WorkflowError ([c2d53bf](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/c2d53bfea54be181770f134a74e9afde55dd731b))
+
 ## [4.3.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.3...v4.3.0) (2025-12-01)
 
 
