@@ -1,8 +1,10 @@
 from pathlib import Path
 from typing import Optional
 
+from snakemake_interface_common.exceptions import WorkflowError
 
-class FileOrDirectoryNotFoundError(Exception):
+
+class FileOrDirectoryNotFoundError(WorkflowError):
     def __init__(self, local_path: Path, query: Optional[str]):
         self.query: Optional[str] = query
         self.local_path: Path = local_path
