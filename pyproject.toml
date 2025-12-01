@@ -22,10 +22,9 @@ homepage = "https://github.com/snakemake/snakemake-interface-storage-plugins"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.pixi.project]
+[tool.pixi.workspace]
 channels = ["conda-forge"]
 platforms = ["osx-arm64", "linux-64"]
-
 
 [tool.pixi.tasks]
 

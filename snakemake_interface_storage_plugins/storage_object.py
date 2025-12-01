@@ -19,6 +19,7 @@ from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
 from snakemake_interface_storage_plugins.common import Operation, get_disk_free
 
+from snakemake_interface_storage_plugins.exceptions import FileOrDirectoryNotFoundError
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
@@ -173,11 +174,16 @@ class StorageObjectRead(StorageObjectBase):
         """
         ...
 
+    def _raise_object_not_found_if_not_exists(self):
+        if not self.exists():
+            raise FileOrDirectoryNotFoundError(self.print_query, self.local_path())
+
     async def managed_size(self) -> int:
         try:
             async with self._rate_limiter(Operation.SIZE):
                 return self.size()
         except Exception as e:
+            self._raise_object_not_found_if_not_exists()
             raise WorkflowError(f"Failed to get size of {self.print_query}", e)
 
     async def managed_mtime(self) -> float:
@@ -185,6 +191,7 @@ class StorageObjectRead(StorageObjectBase):
             async with self._rate_limiter(Operation.MTIME):
                 return self.mtime()
         except Exception as e:
+            self._raise_object_not_found_if_not_exists()
             raise WorkflowError(f"Failed to get mtime of {self.print_query}", e)
 
     async def managed_exists(self) -> bool:
