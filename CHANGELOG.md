@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.3...v4.3.0) (2025-12-01)
+
+
+### Features
+
+* raise FileOrDirectoryNotFoundError if mtime or size queries fail and object does not exist remotely ([#80](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/80)) ([e1fd75e](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/e1fd75eb12fbe121fbc81caf06e60208816b3213))
+
 ## [4.2.3](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.2.2...v4.2.3) (2025-09-10)
 
 
