@@ -19,7 +19,7 @@ from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
 from snakemake_interface_storage_plugins.common import Operation, get_disk_free
 
-from snakemake_interface_storage_plugins.exceptions import ObjectNotFoundError
+from snakemake_interface_storage_plugins.exceptions import FileOrDirectoryNotFoundError
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
@@ -176,7 +176,7 @@ class StorageObjectRead(StorageObjectBase):
 
     def _raise_object_not_found_if_not_exists(self):
         if not self.exists():
-            raise ObjectNotFoundError(self.print_query, self.local_path())
+            raise FileOrDirectoryNotFoundError(self.print_query, self.local_path())
 
     async def managed_size(self) -> int:
         try:

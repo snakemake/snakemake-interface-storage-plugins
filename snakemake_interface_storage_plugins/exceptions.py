@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-class ObjectNotFoundError(Exception):
+class FileOrDirectoryNotFoundError(Exception):
     def __init__(self, query: str, local_path: Path):
         self.query: str = query
         self.local_path: Path = local_path
