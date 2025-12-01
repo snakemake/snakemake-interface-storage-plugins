@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.1...v4.3.2) (2025-12-01)
+
+
+### Bug Fixes
+
+* make query optional ([5c3c5b6](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/5c3c5b65952522a0a83e6f43fdff53960fbc022d))
+
 ## [4.3.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.0...v4.3.1) (2025-12-01)
 
 
