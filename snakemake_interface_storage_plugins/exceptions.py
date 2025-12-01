@@ -5,7 +5,7 @@ from snakemake_interface_common.exceptions import WorkflowError
 
 
 class FileOrDirectoryNotFoundError(WorkflowError):
-    def __init__(self, local_path: Path, query: Optional[str]):
+    def __init__(self, local_path: Path, query: Optional[str] = None):
         self.query: Optional[str] = query
         self.local_path: Path = local_path
         msg = (
