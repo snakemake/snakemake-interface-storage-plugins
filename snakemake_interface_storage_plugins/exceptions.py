@@ -14,4 +14,4 @@ class FileOrDirectoryNotFoundError(Exception):
         super().__init__(msg)
 
     def is_for_path(self, path: Path) -> bool:
-        return self.local_path == path
+        return self.local_path.resolve() == path.resolve()
