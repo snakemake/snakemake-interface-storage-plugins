@@ -12,3 +12,6 @@ class FileOrDirectoryNotFoundError(Exception):
             else f"File or directory not found: {local_path!s}"
         )
         super().__init__(msg)
+
+    def is_for_path(self, path: Path) -> bool:
+        return self.local_path == path
