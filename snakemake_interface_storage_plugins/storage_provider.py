@@ -66,7 +66,7 @@ class StorageProviderBase(ABC):
         is_default=False,
     ):
         self.logger: Logger = logger
-        self.wait_for_free_local_storage: int = wait_for_free_local_storage
+        self.wait_for_free_local_storage: Optional[int] = wait_for_free_local_storage
         try:
             local_prefix.mkdir(parents=True, exist_ok=True)
         except OSError as e:
@@ -90,10 +90,19 @@ class StorageProviderBase(ABC):
         else:
             key = self.rate_limiter_key(query, operation)
             if key not in self._rate_limiters:
-                max_status_checks_frac = Fraction(
-                    self.settings.max_requests_per_second
-                    or self.default_max_requests_per_second()
-                ).limit_denominator()
+                rate = self.default_max_requests_per_second()
+                if (
+                    self.settings is not None
+                    and self.settings.max_requests_per_second is not None
+                ):
+                    rate = self.settings.max_requests_per_second
+
+                if rate is None or rate <= 0:
+                    raise WorkflowError(
+                        "max_requests_per_second must be a positive number, "
+                        f"got {rate}"
+                    )
+                max_status_checks_frac = Fraction(rate).limit_denominator()
                 self._rate_limiters[key] = Throttler(
                     rate_limit=max_status_checks_frac.numerator,
                     period=max_status_checks_frac.denominator,
@@ -159,10 +168,13 @@ class StorageProviderBase(ABC):
     @property
     def is_read_write(self) -> bool:
         from snakemake_interface_storage_plugins.storage_object import (
-            StorageObjectReadWrite,
+            StorageObjectRead,
+            StorageObjectWrite,
         )
 
-        return isinstance(self.storage_object_cls, StorageObjectReadWrite)
+        return isinstance(
+            self.get_storage_object_cls(), StorageObjectRead
+        ) and isinstance(self.get_storage_object_cls(), StorageObjectWrite)
 
     @classmethod
     def get_storage_object_cls(cls):
