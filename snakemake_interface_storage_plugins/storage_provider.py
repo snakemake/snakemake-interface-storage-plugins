@@ -12,7 +12,7 @@ from logging import Logger
 from pathlib import Path
 import sys
 from abc import ABC, abstractmethod
-from typing import Any, List, Optional
+from typing import Any, Dict, Generic, List, Optional, AsyncGenerator, TypeVar
 
 from throttler import Throttler
 from snakemake_interface_common.exceptions import WorkflowError
@@ -22,21 +22,52 @@ from snakemake_interface_storage_plugins.settings import StorageProviderSettings
 
 @dataclass
 class StorageQueryValidationResult:
+    """Result of validating a storage query string.
+
+    Represents whether a query string is valid for a storage provider
+    and provides a reason if the validation fails.
+
+    Parameters
+    ----------
+    query : str
+        The query string being validated.
+    valid : bool
+        Whether the query is valid for the storage provider.
+    reason : str, optional
+        If invalid, explanation of why validation failed.
+    """
+
     query: str
     valid: bool
     reason: Optional[str] = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.valid:
             return f"query {self.query} is valid"
-        else:
+        elif self.reason:
             return f"query {self.query} is invalid: {self.reason}"
+        else:
+            return f"query {self.query} is invalid. Reason Unknown"
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return self.valid
 
 
 class QueryType(Enum):
+    """Enumeration of query types for storage providers.
+
+    Defines the context in which a query will be used within a workflow.
+
+    Attributes
+    ----------
+    INPUT : int
+        Query used for reading/retrieving data from storage.
+    OUTPUT : int
+        Query used for writing/storing data to storage.
+    ANY : int
+        Query usable for both input and output operations.
+    """
+
     INPUT = 0
     OUTPUT = 1
     ANY = 2
@@ -44,29 +75,76 @@ class QueryType(Enum):
 
 @dataclass
 class ExampleQuery:
+    """Example query for a storage provider with description and intended usage.
+
+    Provides documentation and examples for users to understand how to construct
+    valid queries for a specific storage provider.
+
+    Parameters
+    ----------
+    query : str
+        Example query string demonstrating correct format.
+    description : str
+        Human-readable explanation of what the query does.
+    type : QueryType
+        Whether this example is for input, output, or both.
+    """
+
     query: str
     description: str
     type: QueryType
 
 
-class StorageProviderBase(ABC):
-    """This is an abstract class to be used to derive remote provider classes.
-    These might be used to hold common credentials,
-    and are then passed to StorageObjects.
+TStorageProviderSettings = TypeVar(
+    "TStorageProviderSettings",
+    bound="StorageProviderSettingsBase",
+)
+
+
+class StorageProviderBase(ABC, Generic[TStorageProviderSettings]):
+    """Abstract base class for Snakemake storage providers.
+
+    Defines the interface for interacting with external storage systems
+    like S3, GCS, HTTP, etc. Storage providers handle authentication,
+    rate limiting, caching, and mapping between remote resources and
+    local files within Snakemake workflows.
+
+    Parameters
+    ----------
+    local_prefix : Path
+        Directory where remote files are cached locally.
+    settings : StorageProviderSettingsBase, optional
+        Provider-specific configuration options.
+    keep_local : bool, default=False
+        Whether to retain local copies after workflow completion.
+    retrieve : bool, default=True
+        Whether to automatically fetch remote files when referenced.
+    is_default : bool, default=False
+        Whether this provider is the default for its protocol.
     """
+
+    # Class attributes with type hints
+    local_prefix: Path
+    logger: Logger
+    wait_for_free_local_storage: Optional[int]
+    settings: Optional[TStorageProviderSettings]
+    keep_local: bool
+    retrieve: bool
+    is_default: bool
+    _rate_limiters: Dict[Any, Throttler]
 
     def __init__(
         self,
         local_prefix: Path,
         logger: Logger,
         wait_for_free_local_storage: Optional[int] = None,
-        settings: Optional[StorageProviderSettingsBase] = None,
-        keep_local=False,
-        retrieve=True,
-        is_default=False,
+        settings: Optional[TStorageProviderSettings] = None,
+        keep_local: bool = False,
+        retrieve: bool = True,
+        is_default: bool = False,
     ):
         self.logger: Logger = logger
-        self.wait_for_free_local_storage: int = wait_for_free_local_storage
+        self.wait_for_free_local_storage = wait_for_free_local_storage
         try:
             local_prefix.mkdir(parents=True, exist_ok=True)
         except OSError as e:
@@ -79,19 +157,30 @@ class StorageProviderBase(ABC):
         self.retrieve = retrieve
         self.is_default = is_default
         self._rate_limiters = dict()
+        try:
+            self.local_prefix.mkdir(parents=True, exist_ok=True)
+        except OSError as e:
+            raise WorkflowError(
+                f"Failed to create local storage prefix {self.local_prefix}", e
+            )
         self.__post_init__()
 
-    def __post_init__(self):  # noqa B027
+    def __post_init__(self) -> None:
+        """Hook for subclasses to perform additional initialization.
+
+        Subclasses may override this method to perform additional setup
+        after the base class has been initialized.
+        """
         pass
 
-    def rate_limiter(self, query: str, operation: Operation):
+    def rate_limiter(self, query: str, operation: Operation) -> Throttler:
         if not self.use_rate_limiter():
             return self._noop_context()
         else:
             key = self.rate_limiter_key(query, operation)
             if key not in self._rate_limiters:
                 max_status_checks_frac = Fraction(
-                    self.settings.max_requests_per_second
+                    (self.settings.max_requests_per_second if self.settings else None)
                     or self.default_max_requests_per_second()
                 ).limit_denominator()
                 self._rate_limiters[key] = Throttler(
@@ -101,7 +190,7 @@ class StorageProviderBase(ABC):
             return self._rate_limiters[key]
 
     @asynccontextmanager
-    async def _noop_context(self):
+    async def _noop_context(self) -> AsyncGenerator[Any, Any]:
         yield
 
     @classmethod
@@ -159,13 +248,17 @@ class StorageProviderBase(ABC):
     @property
     def is_read_write(self) -> bool:
         from snakemake_interface_storage_plugins.storage_object import (
-            StorageObjectReadWrite,
+            StorageObjectRead,
+            StorageObjectWrite,
         )
 
-        return isinstance(self.storage_object_cls, StorageObjectReadWrite)
+        cls = self.get_storage_object_cls()
+        return issubclass(cls, StorageObjectRead) and issubclass(
+            cls, StorageObjectWrite
+        )
 
     @classmethod
-    def get_storage_object_cls(cls):
+    def get_storage_object_cls(cls) -> type:
         provider = sys.modules[cls.__module__]  # get module of derived class
         return provider.StorageObject
 
@@ -175,7 +268,7 @@ class StorageProviderBase(ABC):
         keep_local: Optional[bool] = None,
         retrieve: Optional[bool] = None,
         static: bool = False,
-    ):
+    ) -> Any:
         from snakemake_interface_storage_plugins.storage_object import (
             StaticStorageObjectProxy,
         )

@@ -20,14 +20,14 @@ from snakemake_interface_storage_plugins import common
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
 
-class StoragePluginRegistry(PluginRegistryBase):
+class StoragePluginRegistry(PluginRegistryBase[Plugin]):
     """This class is a singleton that holds all registered executor plugins."""
 
     def get_registered_read_write_plugins(self) -> List[str]:
         return [
             plugin.name
             for plugin in self.plugins.values()
-            if plugin.storage_provider.is_read_write
+            if plugin.storage_provider.is_read_write is True
         ]
 
     @property

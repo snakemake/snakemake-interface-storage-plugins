@@ -8,7 +8,7 @@ import os
 from abc import ABC, abstractmethod
 from pathlib import Path
 import shutil
-from typing import Iterable, Optional
+from typing import Iterable, Optional, AsyncContextManager, Dict, TypeVar, Generic
 
 from wrapt import ObjectProxy
 from reretry import retry
@@ -35,48 +35,56 @@ class StaticStorageObjectProxy(ObjectProxy):
 
     """
 
-    def exists(self):
+    def exists(self) -> bool:
         return True
 
     def mtime(self) -> float:
         return float("-inf")
 
-    def is_newer(self, time):
+    def is_newer(self, time: float) -> bool:
         return False
 
-    def __copy__(self):
+    def __copy__(self) -> "StaticStorageObjectProxy":
         copied_wrapped = copy.copy(self.__wrapped__)
         return type(self)(copied_wrapped)
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: Dict) -> "StaticStorageObjectProxy":
         copied_wrapped = copy.deepcopy(self.__wrapped__, memo)
         return type(self)(copied_wrapped)
 
 
-class StorageObjectBase(ABC):
+TStorageProviderBase = TypeVar("TStorageProviderBase", bound=StorageProviderBase)
+
+
+class StorageObjectBase(ABC, Generic[TStorageProviderBase]):
     """This is an abstract class to be used to derive storage object classes for
     different cloud storage providers. For example, there could be classes for
     interacting with Amazon AWS S3 and Google Cloud Storage, both derived from this
     common base class.
     """
+    query: str
+    keep_local: bool
+    retrieve: bool
+    provider: TStorageProviderBase
+    print_query: str
+    _overwrite_local_path: Optional[Path] = None
+    _is_ondemand_eligible: bool = False
 
     def __init__(
         self,
         query: str,
         keep_local: bool,
         retrieve: bool,
-        provider: StorageProviderBase,
-    ):
-        self.query: str = query
-        self.keep_local: bool = keep_local
-        self.retrieve: bool = retrieve
-        self.provider: StorageProviderBase = provider
-        self.print_query: str = self.provider.safe_print(self.query)
-        self._overwrite_local_path: Optional[Path] = None
-        self._is_ondemand_eligible: bool = False
+        provider: TStorageProviderBase,
+    ) -> None:
+        self.query = query
+        self.keep_local  = keep_local
+        self.retrieve  = retrieve
+        self.provider = provider
+        self.print_query = self.provider.safe_print(self.query)
         self.__post_init__()
 
-    def __post_init__(self):  # noqa B027
+    def __post_init__(self) -> None:  # noqa B027
         pass
 
     @property
@@ -84,7 +92,7 @@ class StorageObjectBase(ABC):
         return self._is_ondemand_eligible and not self.keep_local
 
     @is_ondemand_eligible.setter
-    def is_ondemand_eligible(self, value: bool):
+    def is_ondemand_eligible(self, value: bool) -> None:
         self._is_ondemand_eligible = value
 
     def set_local_path(self, path: Path) -> None:
@@ -93,7 +101,7 @@ class StorageObjectBase(ABC):
 
     def is_valid_query(self) -> bool:
         """Return True is the query is valid for this storage provider."""
-        return self.provider.is_valid_query(self.query)
+        return bool(self.provider.is_valid_query(self.query))
 
     def local_path(self) -> Path:
         """Return the local path that would represent the query."""
@@ -117,13 +125,13 @@ class StorageObjectBase(ABC):
         # part and any optional parameters if that does not hamper the uniqueness.
         ...
 
-    def _rate_limiter(self, operation: Operation):
+    def _rate_limiter(self, operation: Operation) -> AsyncContextManager:
         return self.provider.rate_limiter(self.query, operation)
 
 
 class StorageObjectRead(StorageObjectBase):
     @abstractmethod
-    async def inventory(self, cache: IOCacheStorageInterface):
+    async def inventory(self, cache: IOCacheStorageInterface) -> None:
         """From this file, try to find as much existence and modification date
         information as possible.
         """
@@ -135,7 +143,7 @@ class StorageObjectRead(StorageObjectBase):
     def get_inventory_parent(self) -> Optional[str]: ...
 
     @abstractmethod
-    def cleanup(self):
+    def cleanup(self) -> None:
         """Perform local cleanup of any remainders of the storage object."""
         ...
 
@@ -158,7 +166,7 @@ class StorageObjectRead(StorageObjectBase):
         return self.size()
 
     @abstractmethod
-    def retrieve_object(self):
+    def retrieve_object(self) -> None:
         """Ensure that the object is accessible locally under self.local_path()
 
         Optionally, this can make use of the attribute self.is_ondemand_eligible,
@@ -201,7 +209,7 @@ class StorageObjectRead(StorageObjectBase):
         except Exception as e:
             raise WorkflowError(f"Failed to check existence of {self.print_query}", e)
 
-    async def managed_retrieve(self):
+    async def managed_retrieve(self) -> None:
         await self.wait_for_free_space()
         try:
             self.local_path().parent.mkdir(parents=True, exist_ok=True)
@@ -230,7 +238,7 @@ class StorageObjectRead(StorageObjectBase):
                 e,
             )
 
-    async def wait_for_free_space(self):
+    async def wait_for_free_space(self) -> None:
         """Wait for free space on the disk."""
         size = await self.managed_local_footprint()
         disk_free = get_disk_free(self.local_path())
@@ -260,19 +268,19 @@ class StorageObjectRead(StorageObjectBase):
             raise WorkflowError(
                 f"Cannot store {self.local_path()} "
                 f"({format_size(size)} > {format_size(disk_free)}), "
-                f"waited {format_timespan(self.provider.wait_for_free_local_storage)} "
+                f"waited {format_timespan(self.provider.wait_for_free_local_storage or 0)} "
                 "for more space."
             )
 
 
 class StorageObjectWrite(StorageObjectBase):
     @abstractmethod
-    def store_object(self): ...
+    def store_object(self) -> None: ...
 
     @abstractmethod
-    def remove(self): ...
+    def remove(self) -> None: ...
 
-    async def managed_remove(self):
+    async def managed_remove(self) -> None:
         try:
             async with self._rate_limiter(Operation.REMOVE):
                 self.remove()
@@ -281,7 +289,7 @@ class StorageObjectWrite(StorageObjectBase):
                 f"Failed to remove storage object {self.print_query}", e
             )
 
-    async def managed_store(self):
+    async def managed_store(self) -> None:
         try:
             async with self._rate_limiter(Operation.STORE):
                 self.store_object()
@@ -302,11 +310,11 @@ class StorageObjectGlob(StorageObjectBase):
 
 class StorageObjectTouch(StorageObjectBase):
     @abstractmethod
-    def touch(self):
+    def touch(self) -> None:
         """Touch the object."""
         ...
 
-    async def managed_touch(self):
+    async def managed_touch(self) -> None:
         try:
             async with self._rate_limiter(Operation.TOUCH):
                 self.touch()
