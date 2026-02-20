@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.3](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.2...v4.3.3) (2026-02-20)
+
+
+### Bug Fixes
+
+* add missing dependency on humanfriendly ([#84](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/84)) ([5f641d5](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/5f641d581ba103ea43d4020d79e4c2eb583f6335))
+
 ## [4.3.2](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.1...v4.3.2) (2025-12-01)
 
 
