@@ -27,16 +27,11 @@ build-backend = "poetry.core.masonry.api"
 channels = ["conda-forge"]
 platforms = ["osx-arm64", "linux-64"]
 
-[tool.pixi.tasks]
-
-[tool.pixi.dependencies]
-python = ">=3.11"
-
 [tool.pixi.environments]
 dev = { features = ["dev"] }
 publish = { features = ["publish"] }
 
-[tool.pixi.feature.dev.dependencies]
+[tool.pixi.feature.dev.pypi-dependencies]
 pytest = ">=8.3.5,<9"
 ruff = ">=0.10.0,<0.11"
 mypy = ">=1.15.0,<2"
@@ -74,9 +69,9 @@ cmd = [
 ]
 
 # Publish
-[tool.pixi.feature.publish.dependencies]
+[tool.pixi.feature.publish.pypi-dependencies]
 twine = ">=6.1.0,<7"
-python-build = ">=1.2.2,<2"
+build = ">=1.2.2,<2"
 
 [tool.pixi.feature.publish.tasks]
 build = { cmd = "python -m build", description = "Build the package into the dist/ directory" }
