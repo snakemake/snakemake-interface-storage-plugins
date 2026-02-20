@@ -36,8 +36,6 @@ pytest = ">=8.3.5,<9"
 ruff = ">=0.10.0,<0.11"
 mypy = ">=1.15.0,<2"
 pytest-cov = ">=6.0.0,<7"
-
-[tool.pixi.feature.dev.pypi-dependencies]
 snakemake-interface-storage-plugins = { path = ".", editable = true }
 snakemake-interface-common = { git = "https://github.com/snakemake/snakemake-interface-common.git" }
 snakemake-storage-plugin-http = { git = "https://github.com/snakemake/snakemake-storage-plugin-http.git" }
