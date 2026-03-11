@@ -257,12 +257,19 @@ class StorageObjectRead(StorageObjectBase):
                 disk_free = get_disk_free(self.local_path())
 
         if size > disk_free:
-            raise WorkflowError(
-                f"Cannot store {self.local_path()} "
-                f"({format_size(size)} > {format_size(disk_free)}), "
-                f"waited {format_timespan(self.provider.wait_for_free_local_storage)} "
-                "for more space."
-            )
+            if wait_time is not None:
+                raise WorkflowError(
+                    f"Cannot store {self.local_path()} "
+                    f"({format_size(size)} > {format_size(disk_free)}), "
+                    f"waited {format_timespan(wait_time)} "
+                    "for more space."
+                )
+            else:
+                raise WorkflowError(
+                    f"Cannot store {self.local_path()} "
+                    f"({format_size(size)} > {format_size(disk_free)}), "
+                    "no waiting since no wait time was configured with --wait-for-free-local-storage."
+                )
 
 
 class StorageObjectWrite(StorageObjectBase):
