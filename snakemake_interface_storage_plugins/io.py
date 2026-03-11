@@ -7,7 +7,6 @@ from abc import abstractmethod
 import re
 from typing import Dict
 
-
 WILDCARD_REGEX = re.compile(
     r"""
     \{
@@ -26,7 +25,7 @@ WILDCARD_REGEX = re.compile(
 )
 
 
-def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False):
+def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False) -> str:
     """Return constant prefix of a pattern, removing everything from the first
     wildcard on.
 
@@ -54,23 +53,28 @@ def get_constant_prefix(pattern: str, strip_incomplete_parts: bool = False):
 class Mtime:
     __slots__ = ["_local", "_local_target", "_storage"]
 
-    def __init__(self, local=None, local_target=None, storage=None):
+    def __init__(
+        self,
+        local: float | None = None,
+        local_target: float | None = None,
+        storage: float | None = None,
+    ) -> None:
         self._local = local
         self._local_target = local_target
         self._storage = storage
 
-    def local_or_storage(self, follow_symlinks=False):
+    def local_or_storage(self, follow_symlinks: bool = False) -> float | None:
         if self._storage is not None:
             return self._storage
         return self.local(follow_symlinks=follow_symlinks)
 
-    def storage(
-        self,
-    ):
+    def storage(self) -> float | None:
         return self._storage
 
-    def local(self, follow_symlinks=False):
+    def local(self, follow_symlinks: bool = False) -> float | None:
         if follow_symlinks and self._local_target is not None:
+            if self._local is not None:
+                return max(self._local, self._local_target)
             return self._local_target
         return self._local
 
