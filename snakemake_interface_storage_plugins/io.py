@@ -3,9 +3,9 @@ __copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
-from abc import abstractmethod
 import re
-from typing import Dict
+from abc import abstractmethod
+from typing import Dict, Optional
 
 WILDCARD_REGEX = re.compile(
     r"""
@@ -95,3 +95,7 @@ class IOCacheStorageInterface:
     @property
     @abstractmethod
     def size(self) -> Dict[str, int]: ...
+
+    @property
+    @abstractmethod
+    def checksum(self) -> Dict[str, str]: ...
