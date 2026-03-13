@@ -3,23 +3,23 @@ __copyright__ = "Copyright 2023, Christopher Tomkins-Tinch, Johannes Köster"
 __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
-from abc import ABC, abstractmethod
 import asyncio
 import logging
-from pathlib import Path
 import shutil
 import sys
+from abc import ABC, abstractmethod
+from pathlib import Path
 from typing import Optional, Type
 
+from snakemake.io import IOCache
+
+from snakemake_interface_storage_plugins.settings import (
+    StorageProviderSettingsBase,
+)
 from snakemake_interface_storage_plugins.storage_provider import (
     StorageProviderBase,
     StorageQueryValidationResult,
 )
-from snakemake_interface_storage_plugins.settings import (
-    StorageProviderSettingsBase,
-)
-from snakemake.io import IOCache
-
 
 logger = logging.getLogger(__name__)
 
@@ -97,6 +97,7 @@ class TestStorageBase(ABC):
 
             assert isinstance(obj.mtime(), (float, int))
             assert isinstance(obj.size(), int) and obj.size() >= 0
+            assert (checksum := obj.checksum()) is None or isinstance(checksum, str)
 
             self._test_inventory(obj)
 
