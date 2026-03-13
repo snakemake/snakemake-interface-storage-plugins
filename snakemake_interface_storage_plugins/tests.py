@@ -4,6 +4,7 @@ __email__ = "johannes.koester@uni-due.de"
 __license__ = "MIT"
 
 import asyncio
+import hashlib
 import logging
 import shutil
 import sys
@@ -97,7 +98,15 @@ class TestStorageBase(ABC):
 
             assert isinstance(obj.mtime(), (float, int))
             assert isinstance(obj.size(), int) and obj.size() >= 0
-            assert (checksum := obj.checksum()) is None or isinstance(checksum, str)
+
+            checksum = obj.checksum()
+            assert checksum is None or isinstance(checksum, str)
+            if checksum is not None:
+                pos = checksum.find(":")
+                assert pos != -1, (
+                    "checksum must contain an algorithm prefix like sha512:"
+                )
+                hashlib.new(checksum[:pos])
 
             self._test_inventory(obj)
 
