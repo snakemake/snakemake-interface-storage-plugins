@@ -24,7 +24,7 @@ from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
 retry_decorator = retry(
-    wait=wait_exponential(multiplier=2, min=3),
+    wait=wait_exponential(multiplier=3),
     stop=stop_after_attempt(3),
     after=after_log(get_logger(), logging.WARNING),
 )
