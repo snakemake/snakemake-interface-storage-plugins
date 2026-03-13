@@ -5,7 +5,7 @@ __license__ = "MIT"
 
 import re
 from abc import abstractmethod
-from typing import Dict, Optional
+from typing import Dict
 
 WILDCARD_REGEX = re.compile(
     r"""
