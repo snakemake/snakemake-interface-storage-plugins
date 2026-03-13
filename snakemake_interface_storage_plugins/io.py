@@ -5,7 +5,7 @@ __license__ = "MIT"
 
 import re
 from abc import abstractmethod
-from typing import Dict
+from typing import Dict, Optional
 
 WILDCARD_REGEX = re.compile(
     r"""
@@ -98,4 +98,4 @@ class IOCacheStorageInterface:
 
     @property
     @abstractmethod
-    def checksum(self) -> Dict[str, str]: ...
+    def checksum(self) -> Dict[str, Optional[str]]: ...
