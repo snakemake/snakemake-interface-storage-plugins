@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.4.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.3...v4.4.0) (2026-03-16)
+
+
+### Features
+
+* add checksum to IOCacheInterface and StorageObject ([#90](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/90)) ([90e9eb7](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/90e9eb7da2c8b3bd68960e8f904eefece91940da))
+
+
+### Bug Fixes
+
+* improve error messaging for disk space issues ([#86](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/86)) ([437629d](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/437629dfdc84ba0ae4eedde78d0f393e8f25ced0))
+* use the latest time of file or link ([#87](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/87)) ([35ba663](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/35ba6639d356a531694696415131ed62507f3b0a))
+
 ## [4.3.3](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.2...v4.3.3) (2026-02-20)
 
 
