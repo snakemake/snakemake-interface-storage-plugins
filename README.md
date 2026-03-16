@@ -197,6 +197,11 @@ class StorageObject(
         ...
 
     @retry_decorator
+    def checksum(self) -> Optional[str]:
+        # return a checksum if metadata provides it
+        ...
+
+    @retry_decorator
     def local_footprint(self) -> int:
         # Local footprint is the size of the object on the local disk.
         # For directories, this should return the recursive sum of the

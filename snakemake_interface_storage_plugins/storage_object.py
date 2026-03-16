@@ -153,6 +153,14 @@ class StorageObjectRead(StorageObjectBase):
         """Size of the object in bytes. Should return 0 for directories."""
         ...
 
+    def checksum(self) -> Optional[str]:
+        """Checksum of the object if available from metadata.
+
+        Should have the form {algorithm}:{checksum}, like sha256:xxx.
+        Defaults to None for backwards compatibility.
+        """
+        return None
+
     def local_footprint(self) -> int:
         """local footprint is the size of the object on the local disk
         For directories, this should return the recursive sum of the
@@ -188,6 +196,14 @@ class StorageObjectRead(StorageObjectBase):
         except Exception as e:
             self._raise_object_not_found_if_not_exists()
             raise WorkflowError(f"Failed to get size of {self.print_query}", e)
+
+    async def managed_checksum(self) -> Optional[str]:
+        try:
+            async with self._rate_limiter(Operation.SIZE):
+                return self.checksum()
+        except Exception as e:
+            self._raise_object_not_found_if_not_exists()
+            raise WorkflowError(f"Failed to get checksum of {self.print_query}", e)
 
     async def managed_mtime(self) -> float:
         try:
