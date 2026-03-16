@@ -55,23 +55,23 @@ class Mtime:
 
     def __init__(
         self,
-        local: float | None = None,
-        local_target: float | None = None,
-        storage: float | None = None,
+        local: Optional[float] = None,
+        local_target: Optional[float] = None,
+        storage: Optional[float] = None,
     ) -> None:
         self._local = local
         self._local_target = local_target
         self._storage = storage
 
-    def local_or_storage(self, follow_symlinks: bool = False) -> float | None:
+    def local_or_storage(self, follow_symlinks: bool = False) -> Optional[float]:
         if self._storage is not None:
             return self._storage
         return self.local(follow_symlinks=follow_symlinks)
 
-    def storage(self) -> float | None:
+    def storage(self) -> Optional[float]:
         return self._storage
 
-    def local(self, follow_symlinks: bool = False) -> float | None:
+    def local(self, follow_symlinks: bool = False) -> Optional[float]:
         if follow_symlinks and self._local_target is not None:
             if self._local is not None:
                 return max(self._local, self._local_target)
