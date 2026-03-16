@@ -5,6 +5,7 @@ __license__ = "MIT"
 
 import asyncio
 import copy
+import logging
 import os
 import shutil
 from abc import ABC, abstractmethod
@@ -12,9 +13,9 @@ from pathlib import Path
 from typing import Iterable, Optional
 
 from humanfriendly import format_size, format_timespan
-from reretry import retry
 from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_common.logging import get_logger
+from tenacity import after_log, retry, stop_after_attempt, wait_exponential
 from wrapt import ObjectProxy
 
 from snakemake_interface_storage_plugins.common import Operation, get_disk_free
@@ -22,7 +23,11 @@ from snakemake_interface_storage_plugins.exceptions import FileOrDirectoryNotFou
 from snakemake_interface_storage_plugins.io import IOCacheStorageInterface
 from snakemake_interface_storage_plugins.storage_provider import StorageProviderBase
 
-retry_decorator = retry(tries=3, delay=3, backoff=2, logger=get_logger())
+retry_decorator = retry(
+    wait=wait_exponential(multiplier=3),
+    stop=stop_after_attempt(3),
+    after=after_log(get_logger(), logging.WARNING),
+)
 
 
 class StaticStorageObjectProxy(ObjectProxy):
