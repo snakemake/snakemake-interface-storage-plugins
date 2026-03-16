@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.1](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.4.0...v4.4.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* python 3.10 compatibility ([#91](https://github.com/snakemake/snakemake-interface-storage-plugins/issues/91)) ([4a7a902](https://github.com/snakemake/snakemake-interface-storage-plugins/commit/4a7a902ff1a65568914e82512c014cf3d051bf02))
+
 ## [4.4.0](https://github.com/snakemake/snakemake-interface-storage-plugins/compare/v4.3.3...v4.4.0) (2026-03-16)
 
 
